@@ -52,3 +52,14 @@ list = do
   _ <- seperator
   price' <- price
   pure (List Two id price')
+
+burn :: Parser Stmt
+burn = do
+  _ <- namespace
+  _ <- seperator
+  _ <- literal "BURN"
+  _ <- seperator
+  _ <- v2 
+  _ <- seperator
+  id <- nftid 
+  pure (Burn Two id)

@@ -22,6 +22,7 @@ instance eqExpr :: Eq Expr where
 
 data Stmt
   = List Version NFTId Price
+  | Burn Version NFTId
 
 derive instance genericStmt :: Generic Stmt _
 
