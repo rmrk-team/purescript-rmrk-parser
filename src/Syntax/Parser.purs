@@ -8,7 +8,6 @@ import Lib.Parsing.Combinators (Parser, bigint, fail, literal, takeuntil)
 import RMRK.Primitives (NFTId(..), Price(..), Version(..))
 import RMRK.Syntax (Expr(..), Stmt(..))
 
-
 parser :: Parser Stmt
 parser 
   = list
