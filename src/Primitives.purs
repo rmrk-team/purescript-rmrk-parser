@@ -2,11 +2,10 @@ module RMRK.Primitives where
 
 import Prelude
 
+import Data.BigInt (BigInt)
 import Data.Eq.Generic (genericEq)
 import Data.Generic.Rep (class Generic)
-import Data.Newtype (class Newtype)
 import Data.Show.Generic (genericShow)
-import Type.Proxy (Proxy(..))
 
 data Version = 
   Two
@@ -29,7 +28,7 @@ instance showNFTId :: Show NFTId where
 instance eqNFTId :: Eq NFTId where
   eq = genericEq
 
-newtype Price = PlanckPrice Int
+newtype Price = PlanckPrice BigInt
 
 derive instance gePrice :: Generic  Price _
 

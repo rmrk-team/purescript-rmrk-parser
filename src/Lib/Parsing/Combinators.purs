@@ -7,10 +7,10 @@ import Control.Alternative (class Alternative)
 import Control.Lazy (class Lazy)
 import Control.Plus (class Plus)
 import Data.Array (fromFoldable, toUnfoldable)
+import Data.BigInt as BigInt
 import Data.Either (Either(..))
-import Data.Int as Int
 import Data.List (List(..), many, (:), some, foldl)
-import Data.Maybe (Maybe(..))
+import Data.Maybe (Maybe)
 import Data.String.CodeUnits (fromCharArray, toCharArray)
 import Data.Tuple (Tuple(..))
 
@@ -72,6 +72,9 @@ isSpace = isSpaceImpl
 isDigit :: Char -> Boolean
 isDigit = isDigitImpl
 
+isChar :: Char -> Char -> Boolean
+isChar a b = a == b
+
 toChars :: String -> List Char
 toChars = toCharArray >>> toUnfoldable
 
@@ -113,12 +116,20 @@ finiteString = do
   s <- many $ ternary (isSpace >>> not)
   pure $ fromChars s
 
-integer :: Parser Int
-integer = do
-  s <- many $ ternary (isDigit >>> not)
-  case Int.fromString $ fromChars s of 
-    Just int -> do pure int
-    Nothing -> fail
+sringdigits :: Parser String
+sringdigits = do
+  s <- many $ ternary isDigit
+  pure $ fromChars s
+
+takeuntil :: Char -> Parser String
+takeuntil match = do
+  s <- many $ ternary (isChar match >>> not)
+  pure $ fromChars (s)
+
+bigint :: Parser (Maybe BigInt.BigInt)
+bigint = do 
+  s <- sringdigits
+  pure $ BigInt.fromString s
 
 anySpace :: Parser String
 anySpace = do

@@ -6,16 +6,27 @@ import Data.Generic.Rep (class Generic)
 import Data.Show.Generic (genericShow)
 import RMRK.Primitives (NFTId, Price, Version)
 
-data Remark
-  = Rmrk
+data Expr
+  = Namespace
   | Seperator
-  | Version
-  | List Version NFTId Price
+  | Version Version
+  | Remark Stmt
 
-derive instance genericRemark :: Generic Remark _
+derive instance genericExpr :: Generic Expr _
 
-instance showRemark :: Show Remark where
+instance showExpr :: Show Expr where
   show = genericShow
 
-instance eqRemark :: Eq Remark where
+instance eqExpr :: Eq Expr where
+  eq = genericEq
+
+data Stmt
+  = List Version NFTId Price
+
+derive instance genericStmt :: Generic Stmt _
+
+instance showStmt :: Show Stmt where
+  show = genericShow
+
+instance eqStmt :: Eq Stmt where
   eq = genericEq

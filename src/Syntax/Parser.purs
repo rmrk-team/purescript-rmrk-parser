@@ -2,49 +2,53 @@ module RMRK.Syntax.Parser where
 
 import Prelude
 
-import Lib.Parsing.Combinators (Parser, finiteString, integer, literal)
+import Control.Alt ((<|>))
+import Data.Maybe (Maybe(..))
+import Lib.Parsing.Combinators (Parser, bigint, fail, literal, takeuntil)
 import RMRK.Primitives (NFTId(..), Price(..), Version(..))
-import RMRK.Syntax (Remark(..))
+import RMRK.Syntax (Expr(..), Stmt(..))
 
 
-parser :: Parser Remark
+parser :: Parser Stmt
 parser 
   = list
 
-rmrk :: Parser Remark
-rmrk = do 
+namespace :: Parser Expr
+namespace = do 
   _ <- literal "rmrk"
-  pure Rmrk
+  pure Namespace
 
-seperator :: Parser Remark
+seperator :: Parser Expr
 seperator = do 
   _ <- literal "::"
   pure Seperator
 
-v2 :: Parser Remark
+v2 :: Parser Expr
 v2 = do 
   _ <- literal "2.0.0"
-  pure Version
+  pure $ Version Two
 
 nftid :: Parser NFTId
 nftid = do 
-  id <- finiteString
+  id <- (takeuntil ':') <|> literal ""
   pure $ NFTId id
 
 price :: Parser Price
 price = do 
-  int <- integer
-  pure $ PlanckPrice int
+  int <- bigint
+  case int of 
+    Just bigintvalue -> pure $ PlanckPrice bigintvalue
+    Nothing -> fail
 
-list :: Parser Remark
+list :: Parser Stmt
 list = do
-  _ <- rmrk
+  _ <- namespace
   _ <- seperator
   _ <- literal "LIST"
   _ <- seperator
   _ <- v2 
   _ <- seperator
-  id <- nftid
+  id <- nftid 
   _ <- seperator
   price' <- price
   pure (List Two id price')
