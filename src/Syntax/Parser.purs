@@ -4,38 +4,41 @@ import Prelude
 
 import Control.Alt ((<|>))
 import Data.Maybe (Maybe(..))
-import Lib.Parsing.Combinators (Parser, bigint, fail, literal, takeuntil)
-import RMRK.Primitives (NFTId(..), Price(..), Version(..))
+import Lib.Parsing.Combinators (Parser, bigint, fail, finiteString, literal, takeuntil)
+import RMRK.Primitives (Address(..), NFTId(..), Price(..), Recipient(..), Version(..))
 import RMRK.Syntax (Expr(..), Stmt(..))
 
 parser :: Parser Stmt
 parser 
-  = list
+  =   list
+  <|> burn
+  <|> buyfor
+  <|> buy
 
 namespace :: Parser Expr
-namespace = do 
+namespace = do
   _ <- literal "rmrk"
   pure Namespace
 
 seperator :: Parser Expr
-seperator = do 
+seperator = do
   _ <- literal "::"
   pure Seperator
 
-v2 :: Parser Expr
-v2 = do 
+v2 :: Parser Version
+v2 = do
   _ <- literal "2.0.0"
-  pure $ Version Two
+  pure $ V2
 
 nftid :: Parser NFTId
-nftid = do 
+nftid = do
   id <- (takeuntil ':') <|> literal ""
   pure $ NFTId id
 
 price :: Parser Price
-price = do 
+price = do
   int <- bigint
-  case int of 
+  case int of
     Just bigintvalue -> pure $ PlanckPrice bigintvalue
     Nothing -> fail
 
@@ -45,12 +48,12 @@ list = do
   _ <- seperator
   _ <- literal "LIST"
   _ <- seperator
-  _ <- v2 
+  version <- v2
   _ <- seperator
-  id <- nftid 
+  id <- nftid
   _ <- seperator
   price' <- price
-  pure (List Two id price')
+  pure (LIST version id price')
 
 burn :: Parser Stmt
 burn = do
@@ -58,7 +61,31 @@ burn = do
   _ <- seperator
   _ <- literal "BURN"
   _ <- seperator
-  _ <- v2 
+  version <- v2
   _ <- seperator
-  id <- nftid 
-  pure (Burn Two id)
+  id <- nftid
+  pure (BURN version id)
+
+buy :: Parser Stmt
+buy = do
+  _ <- namespace
+  _ <- seperator
+  _ <- literal "BUY"
+  _ <- seperator
+  version <- v2
+  _ <- seperator
+  id <- nftid
+  pure (BUY version id Nothing)
+
+buyfor :: Parser Stmt
+buyfor = do
+  _ <- namespace
+  _ <- seperator
+  _ <- literal "BUY"
+  _ <- seperator
+  version <- v2
+  _ <- seperator
+  id <- nftid
+  _ <- seperator
+  address <- finiteString
+  pure (BUY version id (Just $ Account (Address address)))

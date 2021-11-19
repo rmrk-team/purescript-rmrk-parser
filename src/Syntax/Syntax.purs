@@ -1,10 +1,12 @@
 module RMRK.Syntax where
 
 import Prelude
+
 import Data.Eq.Generic (genericEq)
 import Data.Generic.Rep (class Generic)
+import Data.Maybe (Maybe)
 import Data.Show.Generic (genericShow)
-import RMRK.Primitives (NFTId, Price, Version)
+import RMRK.Primitives (NFTId, Price, Recipient, Version)
 
 data Expr
   = Namespace
@@ -21,8 +23,9 @@ instance eqExpr :: Eq Expr where
   eq = genericEq
 
 data Stmt
-  = List Version NFTId Price
-  | Burn Version NFTId
+  = LIST Version NFTId Price
+  | BURN Version NFTId
+  | BUY Version NFTId (Maybe Recipient)
 
 derive instance genericStmt :: Generic Stmt _
 
