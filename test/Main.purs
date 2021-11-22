@@ -51,14 +51,14 @@ main = launchAff_ $ runSpec [consoleReporter] do
       pending "feature complete"
 
     describe "Performance" do 
-      it "parse 3000 strings" do
-        _ <- liftEffect $ time "parse 3000 strings"
-        let r = range 0 1000
+      it "parse 15 000 strings" do
+        _ <- liftEffect $ time "parse 15 000 strings"
+        let r = range 0 5000
         for_ r \_ -> do
           let _ = runParser parser "rmrk::BUY::2.0.0::nftid::recipientid"
           let _ = runParser parser "rmrk::LIST::2.0.0::5105000-0aff6865bed3a66b-VALHELLO-POTION_HEAL-00000001::10000000000"
           let _ = runParser parser "rmrk::BURN::2.0.0::5105000-0aff6865bed3a66b-VALHELLO-POTION_HEAL-00000001"
           pure unit
-        _ <- liftEffect $ timeEnd "parse 3000 strings"
+        _ <- liftEffect $ timeEnd "parse 15 000 strings"
         pure $ unit  
       pending "feature complete"
