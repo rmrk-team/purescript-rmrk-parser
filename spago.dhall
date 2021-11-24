@@ -13,6 +13,7 @@ to generate this file without the comments in this block.
 { name = "rmrk-protocol-parser"
 , dependencies =
   [ "aff"
+  , "argonaut-codecs"
   , "arrays"
   , "bigints"
   , "console"
@@ -22,11 +23,13 @@ to generate this file without the comments in this block.
   , "foldable-traversable"
   , "lists"
   , "maybe"
+  , "ordered-collections"
   , "prelude"
   , "psci-support"
   , "spec"
   , "strings"
   , "tuples"
+  , "validation"
   ]
 , packages = ./packages.dhall
 , sources = [ "src/**/*.purs", "test/**/*.purs" ]
