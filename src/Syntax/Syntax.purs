@@ -1,12 +1,15 @@
 module RMRK.Syntax where
 
 import Prelude
-
 import Data.Eq.Generic (genericEq)
 import Data.Generic.Rep (class Generic)
 import Data.Maybe (Maybe)
 import Data.Show.Generic (genericShow)
-import RMRK.Primitives (NFTId, Price, Recipient, Version)
+import RMRK.Primitives.Entity (Entity)
+import RMRK.Primitives.NFTId (NFTId)
+import RMRK.Primitives.Price (Price)
+import RMRK.Primitives.Recipient (Recipient)
+import RMRK.Primitives.Version (Version)
 
 data Expr
   = Namespace
@@ -22,8 +25,10 @@ instance showExpr :: Show Expr where
 instance eqExpr :: Eq Expr where
   eq = genericEq
 
+-- rmrk::ACCEPT::{version}::{id1}::{entity}::{id2})
 data Stmt
-  = LIST Version NFTId Price
+  = ACCEPT Version NFTId Entity
+  | LIST Version NFTId Price
   | BURN Version NFTId
   | BUY Version NFTId (Maybe Recipient)
 
