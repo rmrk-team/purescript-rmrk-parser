@@ -1,6 +1,10 @@
 module RMRK.Primitives.Base where
 
 import Prelude
+import Data.Argonaut.Decode (class DecodeJson)
+import Data.Argonaut.Decode.Generic (genericDecodeJson)
+import Data.Argonaut.Encode (class EncodeJson)
+import Data.Argonaut.Encode.Generic (genericEncodeJson)
 import Data.Eq.Generic (genericEq)
 import Data.Generic.Rep (class Generic)
 import Data.Map (Map)
@@ -25,3 +29,9 @@ instance showBaseType :: Show BaseType where
 
 instance eqBaseType :: Eq BaseType where
   eq = genericEq
+
+instance encodeJsonBaseType :: EncodeJson BaseType where
+  encodeJson a = genericEncodeJson a
+
+instance decodeJsonBaseType :: DecodeJson BaseType where
+  decodeJson a = genericDecodeJson a

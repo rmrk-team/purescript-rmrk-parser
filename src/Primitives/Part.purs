@@ -1,6 +1,10 @@
 module RMRK.Primitives.Part where
 
 import Prelude
+import Data.Argonaut.Decode (class DecodeJson)
+import Data.Argonaut.Decode.Generic (genericDecodeJson)
+import Data.Argonaut.Encode (class EncodeJson)
+import Data.Argonaut.Encode.Generic (genericEncodeJson)
 import Data.Either (Either)
 import Data.Eq.Generic (genericEq)
 import Data.Generic.Rep (class Generic)
@@ -29,6 +33,12 @@ instance showPartId :: Show PartId where
 instance eqPartId :: Eq PartId where
   eq = genericEq
 
+instance encodeJsonPartId :: EncodeJson PartId where
+  encodeJson a = genericEncodeJson a
+
+instance decodeJsonPartId :: DecodeJson PartId where
+  decodeJson a = genericDecodeJson a
+
 data PartType
   = Slot
   | Fixed
@@ -41,3 +51,9 @@ instance showPartType :: Show PartType where
 
 instance eqPartType :: Eq PartType where
   eq = genericEq
+
+instance encodeJsonPartType :: EncodeJson PartType where
+  encodeJson a = genericEncodeJson a
+
+instance decodeJsonPartType :: DecodeJson PartType where
+  decodeJson a = genericDecodeJson a
