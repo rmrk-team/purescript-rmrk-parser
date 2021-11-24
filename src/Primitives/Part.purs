@@ -10,7 +10,7 @@ type Part
   = { id :: String
     , type :: PartType
     , z :: Int
-    , src :: String
+    , src :: Maybe String
     , themable :: Maybe Boolean
     , equippable :: Maybe (Array NFTId)
     }
