@@ -7,14 +7,17 @@ import Data.Either (Either(..))
 import Data.Foldable (for_)
 import Data.Maybe (Maybe(..))
 import Data.Tuple (Tuple(..))
+import Debug (trace)
 import Effect (Effect)
 import Effect.Aff (launchAff_)
 import Effect.Class (liftEffect)
 import Effect.Console (time, timeEnd)
 import Lib.Parsing.Combinators (runParser)
 import RMRK.Primitives.Address (Address(..))
+import RMRK.Primitives.Base (BaseType(..))
 import RMRK.Primitives.Entity as Entity
 import RMRK.Primitives.NFTId (NFTId(..))
+import RMRK.Primitives.Part (PartId(..), PartType(..))
 import RMRK.Primitives.Price (Price(..))
 import RMRK.Primitives.Recipient as Recipient
 import RMRK.Primitives.ResourceId (ResourceId(..))
@@ -26,11 +29,44 @@ import Test.Spec.Assertions (shouldEqual)
 import Test.Spec.Reporter.Console (consoleReporter)
 import Test.Spec.Runner (runSpec)
 
+-- type Part
+--   = { id :: PartId
+--     , type :: PartType
+--     , z :: Maybe Int
+--     , src :: Maybe String
+--     , themable :: Maybe Boolean
+--     , equippable :: Maybe (Either (Array NFTId) Wildcard)
+--     }
 main :: Effect Unit
 main =
   launchAff_
     $ runSpec [ consoleReporter ] do
         describe "RMRK.Syntax" do
+          describe "Base" do
+            it "should generally parse correctly" do
+              let
+                basejson =
+                  """
+                { 
+                  "symbol": "sym", 
+                  "type": "svg", 
+                  "parts": [
+                    {
+                      "id": "partid",
+                      "type": "slot",
+                      "z": 1,
+                      "src": "gif.jpg",
+                      "themable": false
+                    }
+                  ]
+                }
+                """
+
+                expectedParts = [ { equippable: Nothing, id: (PartId "partid"), src: (Just "gif.jpg"), themable: (Just false), type: Slot, z: (Just 1) } ]
+
+                parsed = runParser parser ("rmrk::BASE::2.0.0::" <> basejson)
+              parsed `shouldEqual` (Right $ Tuple (BASE V2 ({ symbol: "sym", type: SVG, parts: expectedParts, themes: Nothing })) "")
+            pending "feature complete"
           describe "List" do
             it "should generally parse correctly" do
               let
@@ -67,10 +103,6 @@ main =
               let
                 parsed = runParser parser "rmrk::ACCEPT::2.0.0::nftid::NFT::nftid2"
               parsed `shouldEqual` (Right $ Tuple (ACCEPT V2 (NFTId "nftid") (Entity.NFT $ NFTId "nftid2")) "")
-          -- it "should parse correctly without recipient" do
-          --   let parsed = runParser parser "rmrk::BUY::2.0.0::nftid"
-          --   parsed `shouldEqual` (Right $ Tuple (BUY V2 (NFTId "nftid") Nothing) "")
-          -- pending "feature complete"
           describe "Performance" do
             it "parse 15 000 strings" do
               _ <- liftEffect $ time "parse 15 000 strings"

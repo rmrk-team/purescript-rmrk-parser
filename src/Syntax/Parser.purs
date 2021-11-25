@@ -2,11 +2,14 @@ module RMRK.Syntax.Parser where
 
 import Prelude
 import Control.Alt ((<|>))
+import Data.Argonaut.Decode (parseJson, printJsonDecodeError)
+import Data.Either (Either(..))
+import Data.List (List(..))
 import Data.Maybe (Maybe(..))
-import Effect.Class (liftEffect)
-import Effect.Class.Console (logShow)
-import Lib.Parsing.Combinators (Parser, bigint, fail, finiteString, literal, takeuntil)
+import Debug (trace)
+import Lib.Parsing.Combinators (Parser, bigint, fail, finiteString, literal, tail, takeuntil)
 import RMRK.Primitives.Address (Address(..))
+import RMRK.Primitives.Base as Base
 import RMRK.Primitives.Entity (Entity(..))
 import RMRK.Primitives.NFTId (NFTId(..))
 import RMRK.Primitives.Price (Price(..))
@@ -22,6 +25,7 @@ parser =
     <|> burn
     <|> buyfor
     <|> buy
+    <|> base
 
 namespace :: Parser Expr
 namespace = do
@@ -59,6 +63,23 @@ entity = do
     "RES" -> pure $ Resource $ ResourceId id
     "NFT" -> pure $ NFT $ NFTId id
     _ -> fail ("unrecognized type " <> type')
+
+-- rmrk::BASE::{version}::{html_encoded_json}
+base :: Parser Stmt
+base = do
+  _ <- namespace
+  _ <- seperator
+  _ <- literal "BASE"
+  _ <- seperator
+  version <- v2
+  _ <- seperator
+  htmlEncodedbaseJson <- tail
+  case parseJson htmlEncodedbaseJson of
+    Left error -> fail (printJsonDecodeError error)
+    Right json -> do
+      case Base.fromJson json of
+        Left error' -> fail (printJsonDecodeError error')
+        Right base' -> pure $ BASE version base'
 
 accept :: Parser Stmt
 accept = do

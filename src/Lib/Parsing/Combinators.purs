@@ -132,6 +132,9 @@ finiteString = do
   s <- many $ ternary (isSpace >>> not)
   pure $ fromChars s
 
+tail :: Parser String
+tail = Parser \s -> Right $ Tuple s ""
+
 sringdigits :: Parser String
 sringdigits = do
   s <- many $ ternary isDigit

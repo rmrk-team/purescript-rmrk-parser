@@ -14,11 +14,13 @@ to generate this file without the comments in this block.
 , dependencies =
   [ "aff"
   , "argonaut-codecs"
+  , "argonaut-core"
   , "argonaut-generic"
   , "arrays"
   , "bigints"
   , "console"
   , "control"
+  , "debug"
   , "effect"
   , "either"
   , "foldable-traversable"
