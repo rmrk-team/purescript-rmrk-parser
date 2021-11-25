@@ -7,7 +7,6 @@ import Data.Either (Either(..))
 import Data.Foldable (for_)
 import Data.Maybe (Maybe(..))
 import Data.Tuple (Tuple(..))
-import Debug (trace)
 import Effect (Effect)
 import Effect.Aff (launchAff_)
 import Effect.Class (liftEffect)
@@ -29,14 +28,6 @@ import Test.Spec.Assertions (shouldEqual)
 import Test.Spec.Reporter.Console (consoleReporter)
 import Test.Spec.Runner (runSpec)
 
--- type Part
---   = { id :: PartId
---     , type :: PartType
---     , z :: Maybe Int
---     , src :: Maybe String
---     , themable :: Maybe Boolean
---     , equippable :: Maybe (Either (Array NFTId) Wildcard)
---     }
 main :: Effect Unit
 main =
   launchAff_

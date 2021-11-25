@@ -4,9 +4,7 @@ import Prelude
 import Control.Alt ((<|>))
 import Data.Argonaut.Decode (parseJson, printJsonDecodeError)
 import Data.Either (Either(..))
-import Data.List (List(..))
 import Data.Maybe (Maybe(..))
-import Debug (trace)
 import Lib.Parsing.Combinators (Parser, bigint, fail, finiteString, literal, tail, takeuntil)
 import RMRK.Primitives.Address (Address(..))
 import RMRK.Primitives.Base as Base
