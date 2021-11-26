@@ -1,6 +1,8 @@
-module RMRK.Primitives.Theme where
+module RMRK.Primitives.Theme
+  ( Theme
+  ) where
+
+import Lib.Data.HomogenousRecord (HomogenousRecord)
 
 type Theme
-  = { primary_color :: String
-    , secondary_color :: String
-    }
+  = HomogenousRecord String

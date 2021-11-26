@@ -1,4 +1,26 @@
-module Lib.Parsing.Combinators where
+module Lib.Parsing.Combinators
+  ( Parser
+  , ParserError
+  , anyChar
+  , anySpace
+  , bigint
+  , char
+  , digit
+  , fail
+  , finiteString
+  , fromChars
+  , isChar
+  , isDigit
+  , isSpace
+  , literal
+  , runParser
+  , someSpace
+  , sringdigits
+  , tail
+  , takeuntil
+  , ternary
+  , toChars
+  ) where
 
 import Prelude
 import Control.Alt (class Alt)

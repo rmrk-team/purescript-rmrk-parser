@@ -24,6 +24,7 @@ to generate this file without the comments in this block.
   , "effect"
   , "either"
   , "foldable-traversable"
+  , "foreign-object"
   , "lists"
   , "maybe"
   , "ordered-collections"
@@ -31,6 +32,7 @@ to generate this file without the comments in this block.
   , "psci-support"
   , "spec"
   , "strings"
+  , "transformers"
   , "tuples"
   , "validation"
   ]

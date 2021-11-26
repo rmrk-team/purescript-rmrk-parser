@@ -7,17 +7,16 @@ import Data.Argonaut.Encode (class EncodeJson, encodeJson)
 import Data.Either (Either, note)
 import Data.Eq.Generic (genericEq)
 import Data.Generic.Rep (class Generic)
-import Data.Map (Map)
 import Data.Maybe (Maybe(..))
 import Data.Symbol (SProxy(..), reflectSymbol)
+import Lib.Data.HomogenousRecord (HomogenousRecord)
 import RMRK.Primitives.Part (Part)
-import RMRK.Primitives.Theme (Theme)
 
 type Base
   = { symbol :: String
     , type :: BaseType
     , parts :: Array Part
-    , themes :: Maybe (Map String Theme)
+    , themes :: Maybe (HomogenousRecord (HomogenousRecord String))
     }
 
 data BaseType
