@@ -1,4 +1,4 @@
-module RMRK.Primitives.Wildcard where
+module RMRK.Primitives.DEPRECATEDWildcard where
 
 import Prelude
 import Data.Argonaut.Decode (class DecodeJson, JsonDecodeError(..), decodeJson)

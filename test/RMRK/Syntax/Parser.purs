@@ -43,7 +43,8 @@ parsertests =
                 "type": "slot",
                 "z": 1,
                 "src": "gif.jpg",
-                "themable": false
+                "themable": false,
+                "equippable": ["item-1"]
               }
             ],
             "themes": {

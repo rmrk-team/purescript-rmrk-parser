@@ -10,8 +10,7 @@ import Data.Generic.Rep (class Generic)
 import Data.Maybe (Maybe(..))
 import Data.Show.Generic (genericShow)
 import Data.Symbol (SProxy(..), reflectSymbol)
-import RMRK.Primitives.NFTId (NFTId)
-import RMRK.Primitives.Wildcard (Wildcard)
+import RMRK.Primitives.Equippable (Equippable)
 
 type Part
   = { id :: PartId
@@ -19,7 +18,7 @@ type Part
     , z :: Maybe Int
     , src :: Maybe String
     , themable :: Maybe Boolean
-    , equippable :: Maybe (Either (Array NFTId) Wildcard)
+    , equippable :: Maybe Equippable
     }
 
 newtype PartId
