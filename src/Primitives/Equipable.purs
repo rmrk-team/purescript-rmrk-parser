@@ -3,33 +3,49 @@ module RMRK.Primitives.Equippable
   ) where
 
 import Prelude
-import Data.Argonaut.Core (Json)
-import Data.Argonaut.Decode (class DecodeJson, decodeJson)
-import Data.Argonaut.Decode.Decoders (decodeArray)
-import Data.Argonaut.Decode.Generic (genericDecodeJson)
+import Data.Argonaut.Core (Json, toString)
+import Data.Argonaut.Decode (class DecodeJson, JsonDecodeError, decodeJson)
 import Data.Argonaut.Encode (class EncodeJson, encodeJson)
-import Data.Argonaut.Encode.Generic (genericEncodeJson)
+import Data.Argonaut.Encode.Encoders (encodeArray)
+import Data.Either (Either(..))
 import Data.Eq.Generic (genericEq)
 import Data.Generic.Rep (class Generic)
+import Data.Maybe (Maybe(..))
 import Data.Show.Generic (genericShow)
-import RMRK.Primitives.NFTId (NFTId(..))
+import RMRK.Primitives.NFTId (NFTId)
 
 data Equippable
   = Items (Array NFTId)
   | Wildcard
   | None
 
--- derive instance geNFTId :: Generic NFTId _
--- instance showNFTId :: Show NFTId where
---   show = genericShow
--- instance eqNFTId :: Eq NFTId where
---   eq = genericEq
+derive instance geEquippable :: Generic Equippable _
+
+instance showEquippable :: Show Equippable where
+  show = genericShow
+
+instance eqEquippable :: Eq Equippable where
+  eq = genericEq
+
 instance encodeJsonEquippable :: EncodeJson Equippable where
-  encodeJson (Items a) = encodeJson a
   encodeJson Wildcard = encodeJson "*"
   encodeJson None = encodeJson "-"
+  encodeJson (Items a) = encodeJson a
 
--- instance decodeJsonEquippable :: DecodeJson Equippable where
---   decodeJson json = do
---     items' <- decodeJson json
---     items'
+itemsDecoder :: Json -> Either JsonDecodeError Equippable
+itemsDecoder json = case decodeJson json of
+  Left error -> Left error
+  Right items -> Right $ Items items
+
+itemsEncoder :: Array NFTId -> Json
+itemsEncoder items = encodeArray encodeJson items
+
+instance decodeJsonEquippable :: DecodeJson Equippable where
+  decodeJson json = do
+    let
+      string = toString json
+    case string of
+      Just "*" -> Right Wildcard
+      Just "-" -> Right None
+      Nothing -> itemsDecoder json
+      Just _ -> itemsDecoder json

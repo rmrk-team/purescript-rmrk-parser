@@ -15,6 +15,7 @@ import Lib.Parsing.Combinators (runParser)
 import RMRK.Primitives.Address (Address(..))
 import RMRK.Primitives.Base (BaseType(..))
 import RMRK.Primitives.Entity as Entity
+import RMRK.Primitives.Equippable (Equippable(..))
 import RMRK.Primitives.NFTId (NFTId(..))
 import RMRK.Primitives.Part (PartId(..), PartType(..))
 import RMRK.Primitives.Price (Price(..))
@@ -55,7 +56,7 @@ parsertests =
           }
           """
 
-          expectedParts = [ { equippable: Nothing, id: (PartId "partid"), src: (Just "gif.jpg"), themable: (Just false), type: Slot, z: (Just 1) } ]
+          expectedParts = [ { equippable: Just $ Items [ NFTId "item-1" ], id: (PartId "partid"), src: (Just "gif.jpg"), themable: (Just false), type: Slot, z: (Just 1) } ]
 
           expectedThemes :: Maybe (HomogenousRecord (HomogenousRecord String))
           expectedThemes = Just $ HomogenousRecord (M.fromFoldable [ Tuple "default" (HomogenousRecord $ M.fromFoldable [ Tuple "color" "yellow" ]) ])
