@@ -6,12 +6,12 @@ import Prelude
 import Data.Argonaut.Core (Json, toString)
 import Data.Argonaut.Decode (class DecodeJson, JsonDecodeError, decodeJson)
 import Data.Argonaut.Encode (class EncodeJson, encodeJson)
-import Data.Argonaut.Encode.Encoders (encodeArray)
 import Data.Either (Either(..))
 import Data.Eq.Generic (genericEq)
 import Data.Generic.Rep (class Generic)
 import Data.Maybe (Maybe(..))
 import Data.Show.Generic (genericShow)
+import Debug (trace)
 import RMRK.Primitives.NFTId (NFTId)
 
 data Equippable
@@ -36,9 +36,6 @@ itemsDecoder :: Json -> Either JsonDecodeError Equippable
 itemsDecoder json = case decodeJson json of
   Left error -> Left error
   Right items -> Right $ Items items
-
-itemsEncoder :: Array NFTId -> Json
-itemsEncoder items = encodeArray encodeJson items
 
 instance decodeJsonEquippable :: DecodeJson Equippable where
   decodeJson json = do

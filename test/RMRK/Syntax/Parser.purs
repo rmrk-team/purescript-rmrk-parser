@@ -46,6 +46,22 @@ parsertests =
                 "src": "gif.jpg",
                 "themable": false,
                 "equippable": ["item-1"]
+              },
+              {
+                "id": "partid2",
+                "type": "slot",
+                "z": 2,
+                "src": "gif2.jpg",
+                "themable": true,
+                "equippable": "*"
+              },
+              {
+                "id": "partid3",
+                "type": "slot",
+                "z": 3,
+                "src": "gif3.jpg",
+                "themable": true,
+                "equippable": "-"
               }
             ],
             "themes": {
@@ -56,7 +72,11 @@ parsertests =
           }
           """
 
-          expectedParts = [ { equippable: Just $ Items [ NFTId "item-1" ], id: (PartId "partid"), src: (Just "gif.jpg"), themable: (Just false), type: Slot, z: (Just 1) } ]
+          expectedParts =
+            [ { equippable: Just $ Items [ NFTId "item-1" ], id: (PartId "partid"), src: (Just "gif.jpg"), themable: (Just false), type: Slot, z: (Just 1) }
+            , { equippable: Just $ Wildcard, id: (PartId "partid2"), src: (Just "gif2.jpg"), themable: (Just true), type: Slot, z: (Just 2) }
+            , { equippable: Just $ None, id: (PartId "partid3"), src: (Just "gif3.jpg"), themable: (Just true), type: Slot, z: (Just 3) }
+            ]
 
           expectedThemes :: Maybe (HomogenousRecord (HomogenousRecord String))
           expectedThemes = Just $ HomogenousRecord (M.fromFoldable [ Tuple "default" (HomogenousRecord $ M.fromFoldable [ Tuple "color" "yellow" ]) ])
