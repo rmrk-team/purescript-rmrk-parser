@@ -17,7 +17,13 @@ import RMRK.Primitives.Version (Version(..))
 import RMRK.Syntax (Expr(..), Stmt(..))
 
 parser :: Parser Stmt
-parser =
+parser = do
+  _ <- namespace
+  _ <- seperator
+  interaction
+
+interaction :: Parser Stmt
+interaction =
   accept
     <|> list
     <|> burn
@@ -65,8 +71,6 @@ entity = do
 -- rmrk::BASE::{version}::{html_encoded_json}
 base :: Parser Stmt
 base = do
-  _ <- namespace
-  _ <- seperator
   _ <- literal "BASE"
   _ <- seperator
   version <- v2
@@ -81,8 +85,6 @@ base = do
 
 accept :: Parser Stmt
 accept = do
-  _ <- namespace
-  _ <- seperator
   _ <- literal "ACCEPT"
   _ <- seperator
   version <- v2
@@ -94,8 +96,6 @@ accept = do
 
 list :: Parser Stmt
 list = do
-  _ <- namespace
-  _ <- seperator
   _ <- literal "LIST"
   _ <- seperator
   version <- v2
@@ -107,8 +107,6 @@ list = do
 
 burn :: Parser Stmt
 burn = do
-  _ <- namespace
-  _ <- seperator
   _ <- literal "BURN"
   _ <- seperator
   version <- v2
@@ -118,8 +116,6 @@ burn = do
 
 buy :: Parser Stmt
 buy = do
-  _ <- namespace
-  _ <- seperator
   _ <- literal "BUY"
   _ <- seperator
   version <- v2
@@ -129,8 +125,6 @@ buy = do
 
 buyfor :: Parser Stmt
 buyfor = do
-  _ <- namespace
-  _ <- seperator
   _ <- literal "BUY"
   _ <- seperator
   version <- v2

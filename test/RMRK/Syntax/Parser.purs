@@ -17,7 +17,7 @@ import RMRK.Primitives.Base (BaseType(..))
 import RMRK.Primitives.Entity as Entity
 import RMRK.Primitives.Equippable (Equippable(..))
 import RMRK.Primitives.NFTId (NFTId(..))
-import RMRK.Primitives.Part (PartId(..), PartType(..))
+import RMRK.Primitives.Part (PartId(..), PartType(..), Part)
 import RMRK.Primitives.Price (Price(..))
 import RMRK.Primitives.Recipient as Recipient
 import RMRK.Primitives.ResourceId (ResourceId(..))
@@ -27,60 +27,62 @@ import RMRK.Syntax.Parser (parser)
 import Test.Spec (SpecT, describe, it, pending)
 import Test.Spec.Assertions (shouldEqual)
 
+basejson :: String
+basejson =
+  """
+  { 
+    "symbol": "sym", 
+    "type": "svg", 
+    "parts": [
+      {
+        "id": "partid",
+        "type": "slot",
+        "z": 1,
+        "src": "gif.jpg",
+        "themable": false,
+        "equippable": ["item-1"]
+      },
+      {
+        "id": "partid2",
+        "type": "slot",
+        "z": 2,
+        "src": "gif2.jpg",
+        "themable": true,
+        "equippable": "*"
+      },
+      {
+        "id": "partid3",
+        "type": "slot",
+        "z": 3,
+        "src": "gif3.jpg",
+        "themable": true,
+        "equippable": "-"
+      }
+    ],
+    "themes": {
+      "default": {
+        "color": "yellow"
+      }
+    }
+  }
+"""
+
+expectedParts :: Array Part
+expectedParts =
+  [ { equippable: Just $ Items [ NFTId "item-1" ], id: (PartId "partid"), src: (Just "gif.jpg"), themable: (Just false), type: Slot, z: (Just 1) }
+  , { equippable: Just $ Wildcard, id: (PartId "partid2"), src: (Just "gif2.jpg"), themable: (Just true), type: Slot, z: (Just 2) }
+  , { equippable: Just $ None, id: (PartId "partid3"), src: (Just "gif3.jpg"), themable: (Just true), type: Slot, z: (Just 3) }
+  ]
+
+expectedThemes :: Maybe (HomogenousRecord (HomogenousRecord String))
+expectedThemes = Just $ HomogenousRecord (M.fromFoldable [ Tuple "default" (HomogenousRecord $ M.fromFoldable [ Tuple "color" "yellow" ]) ])
+
 parsertests :: forall t1 t2. Monad t1 => MonadThrow Error t2 => SpecT t2 Unit t1 Unit
 parsertests =
   describe "RMRK.Syntax" do
     describe "Base" do
       it "should generally parse correctly" do
         let
-          basejson =
-            """
-          { 
-            "symbol": "sym", 
-            "type": "svg", 
-            "parts": [
-              {
-                "id": "partid",
-                "type": "slot",
-                "z": 1,
-                "src": "gif.jpg",
-                "themable": false,
-                "equippable": ["item-1"]
-              },
-              {
-                "id": "partid2",
-                "type": "slot",
-                "z": 2,
-                "src": "gif2.jpg",
-                "themable": true,
-                "equippable": "*"
-              },
-              {
-                "id": "partid3",
-                "type": "slot",
-                "z": 3,
-                "src": "gif3.jpg",
-                "themable": true,
-                "equippable": "-"
-              }
-            ],
-            "themes": {
-              "default": {
-                "color": "yellow"
-              }
-            }
-          }
-          """
-
-          expectedParts =
-            [ { equippable: Just $ Items [ NFTId "item-1" ], id: (PartId "partid"), src: (Just "gif.jpg"), themable: (Just false), type: Slot, z: (Just 1) }
-            , { equippable: Just $ Wildcard, id: (PartId "partid2"), src: (Just "gif2.jpg"), themable: (Just true), type: Slot, z: (Just 2) }
-            , { equippable: Just $ None, id: (PartId "partid3"), src: (Just "gif3.jpg"), themable: (Just true), type: Slot, z: (Just 3) }
-            ]
-
-          expectedThemes :: Maybe (HomogenousRecord (HomogenousRecord String))
-          expectedThemes = Just $ HomogenousRecord (M.fromFoldable [ Tuple "default" (HomogenousRecord $ M.fromFoldable [ Tuple "color" "yellow" ]) ])
-
           parsed = runParser parser ("rmrk::BASE::2.0.0::" <> basejson)
         parsed `shouldEqual` (Right $ Tuple (BASE V2 ({ symbol: "sym", type: SVG, parts: expectedParts, themes: expectedThemes })) "")
       pending "feature complete"
@@ -120,18 +122,3 @@ parsertests =
         let
           parsed = runParser parser "rmrk::ACCEPT::2.0.0::nftid::NFT::nftid2"
         parsed `shouldEqual` (Right $ Tuple (ACCEPT V2 (NFTId "nftid") (Entity.NFT $ NFTId "nftid2")) "")
-
--- describe "Performance" do
---   it "parse 15 000 strings" do
---     let
---       r = range 0 5000
---     for_ r \_ -> do
---       let
---         _ = runParser parser "rmrk::BUY::2.0.0::nftid::recipientid"
---       let
---         _ = runParser parser "rmrk::LIST::2.0.0::5105000-0aff6865bed3a66b-VALHELLO-POTION_HEAL-00000001::10000000000"
---       let
---         _ = runParser parser "rmrk::BURN::2.0.0::5105000-0aff6865bed3a66b-VALHELLO-POTION_HEAL-00000001"
---       pure unit
---     pure $ unit
---   pending "feature complete"
