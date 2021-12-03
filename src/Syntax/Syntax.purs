@@ -7,6 +7,7 @@ import Data.Maybe (Maybe)
 import Data.Show.Generic (genericShow)
 import RMRK.Primitives.Address (Address)
 import RMRK.Primitives.Base (Base)
+import RMRK.Primitives.Collection as Collection
 import RMRK.Primitives.Entity (EntityAddress)
 import RMRK.Primitives.IssuableId (IssuableId)
 import RMRK.Primitives.NFTId (NFTId)
@@ -30,6 +31,7 @@ instance eqExpr :: Eq Expr where
 
 data Stmt
   = BASE Version Base
+  | CREATE Version Collection.CreatePayload
   | ACCEPT Version NFTId EntityAddress
   | LIST Version NFTId Price
   | BURN Version NFTId

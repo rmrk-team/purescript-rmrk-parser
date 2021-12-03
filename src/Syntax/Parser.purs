@@ -1,4 +1,25 @@
-module RMRK.Syntax.Parser where
+module RMRK.Syntax.Parser
+  ( a
+  , accept
+  , base
+  , baseid
+  , burn
+  , buy
+  , buyfor
+  , changeissuer
+  , collectionid
+  , create
+  , entity
+  , interaction
+  , issuablebaseid
+  , list
+  , namespace
+  , nftid
+  , parser
+  , price
+  , seperator
+  , v2
+  ) where
 
 import Prelude
 import Control.Alt ((<|>))
@@ -9,7 +30,7 @@ import Lib.Parsing.Combinators (Parser, bigint, fail, finiteString, literal, tai
 import RMRK.Primitives.Address (Address(..))
 import RMRK.Primitives.Base (BaseId(..))
 import RMRK.Primitives.Base as Base
-import RMRK.Primitives.Collection (CollectionId(..))
+import RMRK.Primitives.Collection (CollectionId(..), decodeCreatePayload)
 import RMRK.Primitives.Entity (EntityAddress(..))
 import RMRK.Primitives.IssuableId as IssuableId
 import RMRK.Primitives.NFTId (NFTId(..))
@@ -28,6 +49,7 @@ parser = do
 interaction :: Parser Stmt
 interaction =
   accept
+    <|> create
     <|> list
     <|> burn
     <|> buyfor
@@ -86,6 +108,20 @@ base = do
       case Base.fromJson json of
         Left error' -> fail (printJsonDecodeError error')
         Right base' -> pure $ BASE version base'
+
+create :: Parser Stmt
+create = do
+  _ <- literal "CREATE"
+  _ <- seperator
+  version <- v2
+  _ <- seperator
+  htmlEncodedCollectionJson <- tail
+  case parseJson htmlEncodedCollectionJson of
+    Left error -> fail (printJsonDecodeError error)
+    Right json -> do
+      case decodeCreatePayload json of
+        Left error' -> fail (printJsonDecodeError error')
+        Right collectionCreatePayload -> pure $ CREATE version collectionCreatePayload
 
 accept :: Parser Stmt
 accept = do

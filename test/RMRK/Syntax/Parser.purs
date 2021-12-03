@@ -70,6 +70,18 @@ basejson =
   }
 """
 
+createCollectionPayloadJson :: String
+createCollectionPayloadJson =
+  """
+  {
+    "max": 100,
+    "issuer": "CpjsLDC1JFyrhm3ftC9Gs4QoyrkHKhZKtK7YqGTRFtTafgp",
+    "symbol": "DLEP",
+    "id": "0aff6865bed3a66b-DLEP",
+    "metadata": "ipfs://ipfs/QmVgs8P4awhZpFXhkkgnCwBp4AdKRj3F9K58mCZ6fxvn3j"
+  }
+  """
+
 expectedParts :: Array Part
 expectedParts =
   [ { equippable: Just $ Items [ NFTId "item-1" ], id: (PartId "partid"), src: (Just "gif.jpg"), themable: (Just false), type: Slot, z: (Just 1) }
@@ -99,6 +111,20 @@ parsertests =
           Just expectedPrice' -> do
             parsed `shouldEqual` (Right $ Tuple (LIST V2 (NFTId "5105000-0aff6865bed3a66b-VALHELLO-POTION_HEAL-00000001") (PlanckPrice expectedPrice')) "")
           Nothing -> pure unit
+      pending "feature complete"
+    describe "Create Collection" do
+      it "should generally parse correctly" do
+        let
+          parsed = runParser parser ("rmrk::CREATE::2.0.0::" <> createCollectionPayloadJson)
+
+          expectedPayload =
+            { max: 100
+            , id: CollectionId "0aff6865bed3a66b-DLEP"
+            , issuer: Address "CpjsLDC1JFyrhm3ftC9Gs4QoyrkHKhZKtK7YqGTRFtTafgp"
+            , symbol: "DLEP"
+            , metadata: "ipfs://ipfs/QmVgs8P4awhZpFXhkkgnCwBp4AdKRj3F9K58mCZ6fxvn3j"
+            }
+        parsed `shouldEqual` (Right $ Tuple (CREATE V2 expectedPayload) "")
       pending "feature complete"
     describe "Burn" do
       it "should generally parse correctly" do

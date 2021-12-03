@@ -11,7 +11,7 @@ import RMRK.Syntax.Parser (parser)
 main :: Effect Unit
 main = do
   let
-    stmts = 9
+    stmts = 10
 
     r = range 0 (20000 / stmts)
   logShow "parsing 20 000 remarks"
@@ -33,6 +33,8 @@ main = do
       _ = runParser parser "rmrk::CHANGEISSUER::2.0.0::base-2345-SYM::somereceiveraddress"
 
       _ = runParser parser "rmrk::CHANGEISSUER::2.0.0::0aff6865bed3a66b-KANARIA::somereceiveraddress"
+
+      _ = runParser parser ("rmrk::CREATE::2.0.0::" <> createCollectionPayloadJson)
 
       _ = runParser parser basejson
     pure unit
@@ -79,3 +81,15 @@ basejson =
     }
   }
 """
+
+createCollectionPayloadJson :: String
+createCollectionPayloadJson =
+  """
+  {
+    "max": 100,
+    "issuer": "CpjsLDC1JFyrhm3ftC9Gs4QoyrkHKhZKtK7YqGTRFtTafgp",
+    "symbol": "DLEP",
+    "id": "0aff6865bed3a66b-DLEP",
+    "metadata": "ipfs://ipfs/QmVgs8P4awhZpFXhkkgnCwBp4AdKRj3F9K58mCZ6fxvn3j"
+  }
+  """

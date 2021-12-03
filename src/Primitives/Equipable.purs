@@ -11,7 +11,6 @@ import Data.Eq.Generic (genericEq)
 import Data.Generic.Rep (class Generic)
 import Data.Maybe (Maybe(..))
 import Data.Show.Generic (genericShow)
-import Debug (trace)
 import RMRK.Primitives.NFTId (NFTId)
 
 data Equippable
