@@ -14,7 +14,7 @@ import Lib.Data.HomogenousRecord (HomogenousRecord(..))
 import Lib.Parsing.Combinators (runParser)
 import RMRK.Primitives.Address (Address(..))
 import RMRK.Primitives.Base (BaseType(..))
-import RMRK.Primitives.Entity as Entity
+import RMRK.Primitives.Entity as EntityAddress
 import RMRK.Primitives.Equippable (Equippable(..))
 import RMRK.Primitives.NFTId (NFTId(..))
 import RMRK.Primitives.Part (PartId(..), PartType(..), Part)
@@ -33,6 +33,7 @@ basejson =
   { 
     "symbol": "sym", 
     "type": "svg", 
+    "block": 1,
     "parts": [
       {
         "id": "partid",
@@ -84,7 +85,7 @@ parsertests =
       it "should generally parse correctly" do
         let
           parsed = runParser parser ("rmrk::BASE::2.0.0::" <> basejson)
-        parsed `shouldEqual` (Right $ Tuple (BASE V2 ({ symbol: "sym", type: SVG, parts: expectedParts, themes: expectedThemes })) "")
+        parsed `shouldEqual` (Right $ Tuple (BASE V2 ({ block: 1, symbol: "sym", type: SVG, parts: expectedParts, themes: expectedThemes })) "")
       pending "feature complete"
     describe "List" do
       it "should generally parse correctly" do
@@ -117,8 +118,8 @@ parsertests =
       it "should parse correctly with Resource as recipient" do
         let
           parsed = runParser parser "rmrk::ACCEPT::2.0.0::nftid::RES::V1i6B"
-        parsed `shouldEqual` (Right $ Tuple (ACCEPT V2 (NFTId "nftid") (Entity.Resource $ ResourceId "V1i6B")) "")
+        parsed `shouldEqual` (Right $ Tuple (ACCEPT V2 (NFTId "nftid") (EntityAddress.Resource $ ResourceId "V1i6B")) "")
       it "should parse correctly with NFT as recipient" do
         let
           parsed = runParser parser "rmrk::ACCEPT::2.0.0::nftid::NFT::nftid2"
-        parsed `shouldEqual` (Right $ Tuple (ACCEPT V2 (NFTId "nftid") (Entity.NFT $ NFTId "nftid2")) "")
+        parsed `shouldEqual` (Right $ Tuple (ACCEPT V2 (NFTId "nftid") (EntityAddress.NFT $ NFTId "nftid2")) "")

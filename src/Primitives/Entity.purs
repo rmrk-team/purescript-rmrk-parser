@@ -7,14 +7,14 @@ import Data.Show.Generic (genericShow)
 import RMRK.Primitives.NFTId (NFTId)
 import RMRK.Primitives.ResourceId (ResourceId)
 
-data Entity
+data EntityAddress
   = Resource ResourceId
   | NFT NFTId
 
-derive instance geEntity :: Generic Entity _
+derive instance geEntityAddress :: Generic EntityAddress _
 
-instance showEntity :: Show Entity where
+instance showEntityAddress :: Show EntityAddress where
   show = genericShow
 
-instance eqEntity :: Eq Entity where
+instance eqEntityAddress :: Eq EntityAddress where
   eq = genericEq

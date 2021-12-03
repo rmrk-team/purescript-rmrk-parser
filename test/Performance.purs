@@ -14,7 +14,7 @@ main = do
     r = range 0 5000
   logShow "parsing 20 000 remarks"
   _ <- time "parsing 20 000 remarks"
-  for_ r \i -> do
+  for_ r \_ -> do
     let
       _ = runParser parser "rmrk::BUY::2.0.0::nftid::recipientid"
 
@@ -33,6 +33,7 @@ basejson =
   { 
     "symbol": "sym", 
     "type": "svg", 
+    "block": 1,
     "parts": [
       {
         "id": "partid",

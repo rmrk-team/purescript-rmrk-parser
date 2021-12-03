@@ -33,7 +33,7 @@ instance eqPartId :: Eq PartId where
   eq = genericEq
 
 instance encodeJsonPartId :: EncodeJson PartId where
-  encodeJson (PartId a) = encodeJson (partTypeFromString a)
+  encodeJson (PartId a) = encodeJson a
 
 instance decodeJsonPartId :: DecodeJson PartId where
   decodeJson a = case toString a of

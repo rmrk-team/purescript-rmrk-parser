@@ -8,7 +8,7 @@ import Data.Maybe (Maybe(..))
 import Lib.Parsing.Combinators (Parser, bigint, fail, finiteString, literal, tail, takeuntil)
 import RMRK.Primitives.Address (Address(..))
 import RMRK.Primitives.Base as Base
-import RMRK.Primitives.Entity (Entity(..))
+import RMRK.Primitives.Entity (EntityAddress(..))
 import RMRK.Primitives.NFTId (NFTId(..))
 import RMRK.Primitives.Price (Price(..))
 import RMRK.Primitives.Recipient as Recipient
@@ -58,7 +58,7 @@ price = do
     Just bigintvalue -> pure $ PlanckPrice bigintvalue
     Nothing -> fail ("cannot parse price")
 
-entity :: Parser Entity
+entity :: Parser EntityAddress
 entity = do
   type' <- (literal "RES") <|> (literal "NFT")
   _ <- seperator

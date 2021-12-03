@@ -1,13 +1,14 @@
 module RMRK.Primitives.Base where
 
 import Prelude
-import Data.Argonaut.Core (Json)
+import Data.Argonaut.Core (Json, toString)
 import Data.Argonaut.Decode (class DecodeJson, JsonDecodeError(..), decodeJson)
 import Data.Argonaut.Encode (class EncodeJson, encodeJson)
-import Data.Either (Either, note)
+import Data.Either (Either(..), note)
 import Data.Eq.Generic (genericEq)
 import Data.Generic.Rep (class Generic)
 import Data.Maybe (Maybe(..))
+import Data.Show.Generic (genericShow)
 import Data.Symbol (SProxy(..), reflectSymbol)
 import Lib.Data.HomogenousRecord (HomogenousRecord)
 import RMRK.Primitives.Part (Part)
@@ -17,7 +18,30 @@ type Base
     , type :: BaseType
     , parts :: Array Part
     , themes :: Maybe (HomogenousRecord (HomogenousRecord String))
+    , block :: Int
     }
+
+newtype BaseId
+  = BaseId String
+
+identify :: Base -> BaseId
+identify base = BaseId $ "base-" <> (show base.block) <> "-" <> base.symbol
+
+derive instance geBaseId :: Generic BaseId _
+
+instance showBaseId :: Show BaseId where
+  show = genericShow
+
+instance eqBaseId :: Eq BaseId where
+  eq = genericEq
+
+instance encodeJsonBaseId :: EncodeJson BaseId where
+  encodeJson (BaseId a) = encodeJson a
+
+instance decodeJsonBaseId :: DecodeJson BaseId where
+  decodeJson a = case toString a of
+    Just s -> Right $ BaseId s
+    Nothing -> Left $ TypeMismatch "BaseId"
 
 data BaseType
   = SVG

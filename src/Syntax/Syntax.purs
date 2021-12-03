@@ -6,7 +6,7 @@ import Data.Generic.Rep (class Generic)
 import Data.Maybe (Maybe)
 import Data.Show.Generic (genericShow)
 import RMRK.Primitives.Base (Base)
-import RMRK.Primitives.Entity (Entity)
+import RMRK.Primitives.Entity (EntityAddress)
 import RMRK.Primitives.NFTId (NFTId)
 import RMRK.Primitives.Price (Price)
 import RMRK.Primitives.Recipient (Recipient)
@@ -28,7 +28,7 @@ instance eqExpr :: Eq Expr where
 
 data Stmt
   = BASE Version Base
-  | ACCEPT Version NFTId Entity
+  | ACCEPT Version NFTId EntityAddress
   | LIST Version NFTId Price
   | BURN Version NFTId
   | BUY Version NFTId (Maybe Recipient)
