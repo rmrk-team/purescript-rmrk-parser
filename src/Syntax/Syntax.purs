@@ -5,8 +5,10 @@ import Data.Eq.Generic (genericEq)
 import Data.Generic.Rep (class Generic)
 import Data.Maybe (Maybe)
 import Data.Show.Generic (genericShow)
+import RMRK.Primitives.Address (Address)
 import RMRK.Primitives.Base (Base)
 import RMRK.Primitives.Entity (EntityAddress)
+import RMRK.Primitives.IssuableId (IssuableId)
 import RMRK.Primitives.NFTId (NFTId)
 import RMRK.Primitives.Price (Price)
 import RMRK.Primitives.Recipient (Recipient)
@@ -32,6 +34,7 @@ data Stmt
   | LIST Version NFTId Price
   | BURN Version NFTId
   | BUY Version NFTId (Maybe Recipient)
+  | CHANGEISSUER Version IssuableId Address
 
 derive instance genericStmt :: Generic Stmt _
 

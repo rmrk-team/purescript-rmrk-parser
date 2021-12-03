@@ -1,5 +1,5 @@
 module Lib.Parsing.Combinators
-  ( Parser
+  ( Parser(..)
   , ParserError
   , anyChar
   , anySpace

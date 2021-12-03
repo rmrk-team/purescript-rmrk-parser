@@ -7,8 +7,11 @@ import Data.Either (Either(..))
 import Data.Maybe (Maybe(..))
 import Lib.Parsing.Combinators (Parser, bigint, fail, finiteString, literal, tail, takeuntil)
 import RMRK.Primitives.Address (Address(..))
+import RMRK.Primitives.Base (BaseId(..))
 import RMRK.Primitives.Base as Base
+import RMRK.Primitives.Collection (CollectionId(..))
 import RMRK.Primitives.Entity (EntityAddress(..))
+import RMRK.Primitives.IssuableId as IssuableId
 import RMRK.Primitives.NFTId (NFTId(..))
 import RMRK.Primitives.Price (Price(..))
 import RMRK.Primitives.Recipient as Recipient
@@ -30,6 +33,7 @@ interaction =
     <|> buyfor
     <|> buy
     <|> base
+    <|> changeissuer
 
 namespace :: Parser Expr
 namespace = do
@@ -131,5 +135,36 @@ buyfor = do
   _ <- seperator
   id <- nftid
   _ <- seperator
-  address <- finiteString
-  pure (BUY version id (Just $ Recipient.Account (Address address)))
+  address <- map Address finiteString
+  pure (BUY version id (Just $ Recipient.Account address))
+
+a :: Parser String
+a = pure <$> (literal "base-") <*> (takeuntil ':')
+
+-- <|> do
+--     s <- finiteString
+--     pure $ Collection $ CollectionId s
+issuablebaseid :: Parser IssuableId.IssuableId
+issuablebaseid = (map IssuableId.Base baseid) <|> (map IssuableId.Collection collectionid)
+
+baseid :: Parser BaseId
+baseid = do
+  base' <- literal "base-"
+  rest <- (takeuntil ':')
+  pure $ BaseId (base' <> rest)
+
+collectionid :: Parser CollectionId
+collectionid = do
+  rest <- (takeuntil ':')
+  pure $ CollectionId rest
+
+changeissuer :: Parser Stmt
+changeissuer = do
+  _ <- literal "CHANGEISSUER"
+  _ <- seperator
+  version <- v2
+  _ <- seperator
+  id <- issuablebaseid
+  _ <- seperator
+  address <- map Address finiteString
+  pure $ CHANGEISSUER version id address

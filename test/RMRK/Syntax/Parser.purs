@@ -13,9 +13,11 @@ import Effect.Aff (Error)
 import Lib.Data.HomogenousRecord (HomogenousRecord(..))
 import Lib.Parsing.Combinators (runParser)
 import RMRK.Primitives.Address (Address(..))
-import RMRK.Primitives.Base (BaseType(..))
+import RMRK.Primitives.Base (BaseId(..), BaseType(..))
+import RMRK.Primitives.Collection (CollectionId(..))
 import RMRK.Primitives.Entity as EntityAddress
 import RMRK.Primitives.Equippable (Equippable(..))
+import RMRK.Primitives.IssuableId (IssuableId(..))
 import RMRK.Primitives.NFTId (NFTId(..))
 import RMRK.Primitives.Part (PartId(..), PartType(..), Part)
 import RMRK.Primitives.Price (Price(..))
@@ -123,3 +125,12 @@ parsertests =
         let
           parsed = runParser parser "rmrk::ACCEPT::2.0.0::nftid::NFT::nftid2"
         parsed `shouldEqual` (Right $ Tuple (ACCEPT V2 (NFTId "nftid") (EntityAddress.NFT $ NFTId "nftid2")) "")
+    describe "Change Issuer" do
+      it "should parse correctly with Base id" do
+        let
+          parsed = runParser parser "rmrk::CHANGEISSUER::2.0.0::base-2345-SYM::somereceiveraddress"
+        parsed `shouldEqual` (Right $ Tuple (CHANGEISSUER V2 (Base $ BaseId "base-2345-SYM") (Address "somereceiveraddress")) "")
+      it "should parse correctly with Collection id" do
+        let
+          parsed = runParser parser "rmrk::CHANGEISSUER::2.0.0::0aff6865bed3a66b-KANARIA::somereceiveraddress"
+        parsed `shouldEqual` (Right $ Tuple (CHANGEISSUER V2 (Collection $ CollectionId "0aff6865bed3a66b-KANARIA") (Address "somereceiveraddress")) "")
