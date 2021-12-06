@@ -3,7 +3,7 @@ module RMRK.Primitives.Namespace
   ) where
 
 import Prelude
-import Data.Argonaut.Core (toString)
+import Data.Argonaut.Core as A
 import Data.Argonaut.Decode (class DecodeJson, JsonDecodeError(..))
 import Data.Argonaut.Encode (class EncodeJson, encodeJson)
 import Data.Either (Either(..))
@@ -11,6 +11,7 @@ import Data.Eq.Generic (genericEq)
 import Data.Generic.Rep (class Generic)
 import Data.Maybe (Maybe(..))
 import Data.Show.Generic (genericShow)
+
 data Namespace
   = RMRK1
   | RMRK2
@@ -26,18 +27,26 @@ instance eqNamespace :: Eq Namespace where
   eq = genericEq
 
 instance encodeJsonNamespace :: EncodeJson Namespace where
-  encodeJson RMRK1 = encodeJson "RMRK1"
-  encodeJson RMRK2 = encodeJson "RMRK2"
-  encodeJson PUBKEY = encodeJson "PUBKEY"
-  encodeJson (EXO s) = encodeJson s
+  encodeJson n = encodeJson $ toString n
 
 instance decodeJsonNamespace :: DecodeJson Namespace where
   decodeJson json = do
     let
-      string = toString json
+      string = A.toString json
     case string of
-      Just "RMRK1" -> Right RMRK1
-      Just "RMRK2" -> Right RMRK2
-      Just "PUBKEY" -> Right PUBKEY
-      Just s -> Right $ EXO s
-      Nothing -> Left $ TypeMismatch ("No matched namespace for")
+      Just s -> Right $ fromString s
+      Nothing -> Left $ TypeMismatch ("No matched namespace")
+
+fromString :: String -> Namespace
+fromString s = case s of
+  "RMRK1" -> RMRK1
+  "RMRK2" -> RMRK2
+  "PUBKEY" -> PUBKEY
+  s' -> EXO s'
+
+toString :: Namespace -> String
+toString n = case n of
+  RMRK1 -> "RMRK1"
+  RMRK2 -> "RMRK2"
+  PUBKEY -> "PUBKEY"
+  (EXO s) -> s
