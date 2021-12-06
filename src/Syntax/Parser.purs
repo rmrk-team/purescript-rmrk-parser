@@ -13,7 +13,7 @@ module RMRK.Syntax.Parser
   , interaction
   , issuablebaseid
   , list
-  , namespace
+  , root
   , nftid
   , parser
   , price
@@ -42,7 +42,7 @@ import RMRK.Syntax (Expr(..), Stmt(..))
 
 parser :: Parser Stmt
 parser = do
-  _ <- namespace
+  _ <- root
   _ <- seperator
   interaction
 
@@ -57,10 +57,10 @@ interaction =
     <|> base
     <|> changeissuer
 
-namespace :: Parser Expr
-namespace = do
+root :: Parser Expr
+root = do
   _ <- literal "rmrk"
-  pure Namespace
+  pure RootNamespace
 
 seperator :: Parser Expr
 seperator = do

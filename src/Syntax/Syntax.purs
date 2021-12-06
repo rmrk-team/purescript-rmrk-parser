@@ -16,7 +16,7 @@ import RMRK.Primitives.Recipient (Recipient)
 import RMRK.Primitives.Version (Version)
 
 data Expr
-  = Namespace
+  = RootNamespace
   | Seperator
   | Version Version
   | Remark Stmt
