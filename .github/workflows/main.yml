@@ -29,5 +29,5 @@ jobs:
       - name: Run a multi-line script
         run: |
           npm install
-          spago build
-          spago test
+          npm build
+          npm test
