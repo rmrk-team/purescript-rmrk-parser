@@ -1,7 +1,7 @@
 {
     "name": "purescript-rmrk-parser",
     "license": [
-        "(GPL-3.0-only OR MIT)"
+        "Apache-2.0"
     ],
     "repository": {
         "type": "git",
