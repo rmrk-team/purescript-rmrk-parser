@@ -40,7 +40,7 @@ to generate this file without the comments in this block.
   ]
 , packages = ./packages.dhall
 , sources = [ "src/**/*.purs", "test/**/*.purs" ]
-, license = "(GPL-3.0-only OR MIT)"
+, license = "Apache-2.0"
 , repository = "https://github.com/rmrk-team/purescript-rmrk-parser.git"
 , author = "Jørn Andre, @yornaath | @gorillatron | @rmrk.app"
 }

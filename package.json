@@ -13,7 +13,7 @@
     "url": "git+https://github.com/rmrk-team/purescript-rmrk-parser.git"
   },
   "author": "Jørn Andre, @yornaath | @gorillatron | @rmrk.app",
-  "license": "ISC",
+  "license": "Apache-2.0",
   "bugs": {
     "url": "https://github.com/rmrk-team/purescript-rmrk-parser/issues"
   },
