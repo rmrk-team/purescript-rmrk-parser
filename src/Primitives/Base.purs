@@ -77,3 +77,15 @@ instance decodeJsonBaseType :: DecodeJson BaseType where
   decodeJson json = do
     string <- decodeJson json
     note (TypeMismatch "BaseType") (baseTypeFromString string)
+
+data BaseSlotAction
+  = Equip String
+  | Unequip
+
+derive instance geBaseSlotAction :: Generic BaseSlotAction _
+
+instance showBaseSlotAction :: Show BaseSlotAction where
+  show = genericShow
+
+instance eqBaseSlotAction :: Eq BaseSlotAction where
+  eq = genericEq

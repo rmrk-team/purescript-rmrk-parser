@@ -13,7 +13,7 @@ import Effect.Aff (Error)
 import Lib.Data.HomogenousRecord (HomogenousRecord(..))
 import Lib.Parsing.Combinators (runParser)
 import RMRK.Primitives.Address (Address(..))
-import RMRK.Primitives.Base (BaseId(..), BaseType(..))
+import RMRK.Primitives.Base (BaseId(..), BaseSlotAction(..), BaseType(..))
 import RMRK.Primitives.Collection (CollectionId(..))
 import RMRK.Primitives.Entity as EntityAddress
 import RMRK.Primitives.Equippable (Equippable(..))
@@ -178,3 +178,22 @@ parsertests =
         let
           parsed = runParser parser "rmrk::EMOTE::2.0.0::subsocial:like::5105000-0aff6865bed3a66b-DLEP-DL15-00000001::1F389"
         parsed `shouldEqual` (Right $ Tuple (EMOTE V2 (EXO "5105000-0aff6865bed3a66b-DLEP-DL15-00000001") "1F389") "")
+    describe "Equip" do
+      it "should parse correctly when equiping" do
+        let
+          parsed = runParser parser "rmrk::EQUIP::2.0.0::5105000-0aff6865bed3a66b-DLEP-ARMOR-00000001::base_1.slot_1"
+        parsed `shouldEqual` (Right $ Tuple (EQUIP V2 (NFTId "5105000-0aff6865bed3a66b-DLEP-ARMOR-00000001") (Equip "base_1.slot_1")) "")
+      it "should parse correctly when un-equiping with empty string" do
+        let
+          parsed = runParser parser "rmrk::EQUIP::2.0.0::5105000-0aff6865bed3a66b-DLEP-ARMOR-00000001::"
+        parsed `shouldEqual` (Right $ Tuple (EQUIP V2 (NFTId "5105000-0aff6865bed3a66b-DLEP-ARMOR-00000001") (Unequip)) "")
+      it "should parse correctly when un-equiping with null" do
+        let
+          parsed = runParser parser "rmrk::EQUIP::2.0.0::5105000-0aff6865bed3a66b-DLEP-ARMOR-00000001::null"
+        parsed `shouldEqual` (Right $ Tuple (EQUIP V2 (NFTId "5105000-0aff6865bed3a66b-DLEP-ARMOR-00000001") (Unequip)) "")
+      it "should parse correctly when un-equiping with false" do
+        let
+          parsed = runParser parser "rmrk::EQUIP::2.0.0::5105000-0aff6865bed3a66b-DLEP-ARMOR-00000001::null"
+        parsed `shouldEqual` (Right $ Tuple (EQUIP V2 (NFTId "5105000-0aff6865bed3a66b-DLEP-ARMOR-00000001") (Unequip)) "")
+
+--rmrk::EQUIP::2.0.0::5105000-0aff6865bed3a66b-DLEP-ARMOR-00000001::base_1.slot_1

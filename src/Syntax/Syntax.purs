@@ -6,7 +6,7 @@ import Data.Generic.Rep (class Generic)
 import Data.Maybe (Maybe)
 import Data.Show.Generic (genericShow)
 import RMRK.Primitives.Address (Address)
-import RMRK.Primitives.Base (Base)
+import RMRK.Primitives.Base (Base, BaseSlotAction)
 import RMRK.Primitives.Collection as Collection
 import RMRK.Primitives.Entity (EntityAddress)
 import RMRK.Primitives.IssuableId (IssuableId)
@@ -39,6 +39,7 @@ data Stmt
   | BUY Version NFTId (Maybe Recipient)
   | CHANGEISSUER Version IssuableId Address
   | EMOTE Version Namespace String
+  | EQUIP Version NFTId BaseSlotAction
 
 derive instance genericStmt :: Generic Stmt _
 

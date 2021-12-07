@@ -10,13 +10,14 @@ module RMRK.Syntax.Parser
   , collectionid
   , create
   , entity
+  , equip
   , interaction
   , issuablebaseid
   , list
-  , root
   , nftid
   , parser
   , price
+  , root
   , seperator
   , v2
   ) where
@@ -26,9 +27,10 @@ import Control.Alt ((<|>))
 import Data.Argonaut.Decode (parseJson, printJsonDecodeError)
 import Data.Either (Either(..))
 import Data.Maybe (Maybe(..))
+import Data.String (length, toLower)
 import Lib.Parsing.Combinators (Parser(..), bigint, fail, finiteString, literal, tail, takeuntil)
 import RMRK.Primitives.Address (Address(..))
-import RMRK.Primitives.Base (BaseId(..))
+import RMRK.Primitives.Base (BaseId(..), BaseSlotAction(..))
 import RMRK.Primitives.Base as Base
 import RMRK.Primitives.Collection (CollectionId(..), decodeCreatePayload)
 import RMRK.Primitives.Entity (EntityAddress(..))
@@ -58,6 +60,7 @@ interaction =
     <|> base
     <|> changeissuer
     <|> emote
+    <|> equip
 
 root :: Parser Expr
 root = do
@@ -228,3 +231,19 @@ emote = do
   _ <- seperator
   emotion <- tail
   pure $ EMOTE version namespace' emotion
+
+equip :: Parser Stmt
+equip = do
+  _ <- literal "EQUIP"
+  _ <- seperator
+  version <- v2
+  _ <- seperator
+  id <- nftid
+  _ <- seperator
+  slot <- tail
+  if (length slot) > 0 then case toLower slot of
+    "null" -> pure $ EQUIP version id (Unequip)
+    "false" -> pure $ EQUIP version id (Unequip)
+    slot' -> pure $ EQUIP version id (Equip slot')
+  else
+    pure $ EQUIP version id (Unequip)
