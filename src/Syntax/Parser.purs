@@ -28,7 +28,7 @@ import Data.Argonaut.Decode (parseJson, printJsonDecodeError)
 import Data.Either (Either(..))
 import Data.Maybe (Maybe(..))
 import Data.String (length, toLower)
-import Lib.Parsing.Combinators (Parser(..), bigint, fail, finiteString, literal, tail, takeuntil)
+import Lib.Parsing.Combinators (Parser, bigint, fail, finiteString, literal, tail, takeuntil)
 import RMRK.Primitives.Address (Address(..))
 import RMRK.Primitives.Base (BaseId(..), BaseSlotAction(..))
 import RMRK.Primitives.Base as Base

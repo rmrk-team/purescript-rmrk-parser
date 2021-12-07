@@ -32,7 +32,7 @@ import Data.BigInt as BigInt
 import Data.Either (Either(..))
 import Data.List (List(..), many, (:), some, foldl)
 import Data.Maybe (Maybe(..))
-import Data.String (Pattern(..), drop, length, split, splitAt)
+import Data.String (Pattern(..), drop, length, split)
 import Data.String.CodeUnits (fromCharArray, toCharArray)
 import Data.Tuple (Tuple(..))
 
