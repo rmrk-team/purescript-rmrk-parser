@@ -4,11 +4,11 @@
   "description": "Start of a rmrk parser in puresccript. For education and getting some great purescript hackers on board down the road :sunglasses",
   "main": "index.js",
   "directories": {
-    "build": "spago build",
-    "test": "spago test"
+    
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "spago build",
+    "test": "spago test"
   },
   "repository": {
     "type": "git",
