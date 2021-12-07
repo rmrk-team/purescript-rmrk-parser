@@ -11,6 +11,7 @@ import RMRK.Primitives.Collection as Collection
 import RMRK.Primitives.Entity (EntityAddress)
 import RMRK.Primitives.IssuableId (IssuableId)
 import RMRK.Primitives.NFTId (NFTId)
+import RMRK.Primitives.Namespace (Namespace)
 import RMRK.Primitives.Price (Price)
 import RMRK.Primitives.Recipient (Recipient)
 import RMRK.Primitives.Version (Version)
@@ -37,6 +38,7 @@ data Stmt
   | BURN Version NFTId
   | BUY Version NFTId (Maybe Recipient)
   | CHANGEISSUER Version IssuableId Address
+  | EMOTE Version Namespace String
 
 derive instance genericStmt :: Generic Stmt _
 

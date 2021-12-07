@@ -19,6 +19,7 @@ import RMRK.Primitives.Entity as EntityAddress
 import RMRK.Primitives.Equippable (Equippable(..))
 import RMRK.Primitives.IssuableId (IssuableId(..))
 import RMRK.Primitives.NFTId (NFTId(..))
+import RMRK.Primitives.Namespace (Namespace(..))
 import RMRK.Primitives.Part (PartId(..), PartType(..), Part)
 import RMRK.Primitives.Price (Price(..))
 import RMRK.Primitives.Recipient as Recipient
@@ -160,3 +161,20 @@ parsertests =
         let
           parsed = runParser parser "rmrk::CHANGEISSUER::2.0.0::0aff6865bed3a66b-KANARIA::somereceiveraddress"
         parsed `shouldEqual` (Right $ Tuple (CHANGEISSUER V2 (Collection $ CollectionId "0aff6865bed3a66b-KANARIA") (Address "somereceiveraddress")) "")
+    describe "Emote" do
+      it "should parse correctly with RMRK1 namepsace" do
+        let
+          parsed = runParser parser "rmrk::EMOTE::2.0.0::RMRK1::5105000-0aff6865bed3a66b-DLEP-DL15-00000001::1F389"
+        parsed `shouldEqual` (Right $ Tuple (EMOTE V2 (RMRK1 $ NFTId "5105000-0aff6865bed3a66b-DLEP-DL15-00000001") "1F389") "")
+      it "should parse correctly with RMRK2 namepsace" do
+        let
+          parsed = runParser parser "rmrk::EMOTE::2.0.0::RMRK2::5105000-0aff6865bed3a66b-DLEP-DL15-00000001::1F389"
+        parsed `shouldEqual` (Right $ Tuple (EMOTE V2 (RMRK2 $ NFTId "5105000-0aff6865bed3a66b-DLEP-DL15-00000001") "1F389") "")
+      it "should parse correctly with PUBKEY namepsace" do
+        let
+          parsed = runParser parser "rmrk::EMOTE::2.0.0::PUBKEY::5105000-0aff6865bed3a66b-DLEP-DL15-00000001::1F389"
+        parsed `shouldEqual` (Right $ Tuple (EMOTE V2 (PUBKEY "5105000-0aff6865bed3a66b-DLEP-DL15-00000001") "1F389") "")
+      it "should parse correctly with EXO namepsace" do
+        let
+          parsed = runParser parser "rmrk::EMOTE::2.0.0::subsocial:like::5105000-0aff6865bed3a66b-DLEP-DL15-00000001::1F389"
+        parsed `shouldEqual` (Right $ Tuple (EMOTE V2 (EXO "5105000-0aff6865bed3a66b-DLEP-DL15-00000001") "1F389") "")

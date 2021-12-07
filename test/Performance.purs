@@ -11,7 +11,7 @@ import RMRK.Syntax.Parser (parser)
 main :: Effect Unit
 main = do
   let
-    stmts = 10
+    stmts = 14
 
     r = range 0 (20000 / stmts)
   logShow "parsing 20 000 remarks"
@@ -35,6 +35,14 @@ main = do
       _ = runParser parser "rmrk::CHANGEISSUER::2.0.0::0aff6865bed3a66b-KANARIA::somereceiveraddress"
 
       _ = runParser parser ("rmrk::CREATE::2.0.0::" <> createCollectionPayloadJson)
+
+      _ = runParser parser "rmrk::EMOTE::2.0.0::RMRK1::5105000-0aff6865bed3a66b-DLEP-DL15-00000001::1F389"
+
+      _ = runParser parser "rmrk::EMOTE::2.0.0::RMRK2::5105000-0aff6865bed3a66b-DLEP-DL15-00000001::1F389"
+
+      _ = runParser parser "rmrk::EMOTE::2.0.0::PUBKEY::5105000-0aff6865bed3a66b-DLEP-DL15-00000001::1F389"
+
+      _ = runParser parser "rmrk::EMOTE::2.0.0::subsocial:like::5105000-0aff6865bed3a66b-DLEP-DL15-00000001::1F389"
 
       _ = runParser parser basejson
     pure unit

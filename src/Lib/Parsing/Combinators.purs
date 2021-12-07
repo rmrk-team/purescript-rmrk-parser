@@ -27,11 +27,12 @@ import Control.Alt (class Alt)
 import Control.Alternative (class Alternative)
 import Control.Lazy (class Lazy)
 import Control.Plus (class Plus)
-import Data.Array (fromFoldable, toUnfoldable)
+import Data.Array (fromFoldable, index, toUnfoldable)
 import Data.BigInt as BigInt
 import Data.Either (Either(..))
 import Data.List (List(..), many, (:), some, foldl)
-import Data.Maybe (Maybe)
+import Data.Maybe (Maybe(..))
+import Data.String (Pattern(..), drop, length, split, splitAt)
 import Data.String.CodeUnits (fromCharArray, toCharArray)
 import Data.Tuple (Tuple(..))
 
@@ -162,11 +163,25 @@ sringdigits = do
   s <- many $ ternary isDigit
   pure $ fromChars s
 
-takeuntil :: Char -> Parser String
-takeuntil match' = do
-  s <- many $ ternary (isChar match' >>> not)
-  pure $ fromChars (s)
+-- takeuntil :: Char -> Parser String
+-- takeuntil match' = do
+--   s <- many $ ternary (isChar match' >>> not)
+--   pure $ fromChars (s)
+takeuntil :: String -> Parser String
+takeuntil matchpattern =
+  Parser \s -> do
+    let
+      parts = split (Pattern matchpattern) s
 
+      head = index parts 0
+    case head of
+      Nothing -> Right $ Tuple s ""
+      Just heads' -> do
+        let
+          rest = drop (length heads') s
+        Right $ Tuple heads' rest
+
+--case splitAt (length )
 bigint :: Parser (Maybe BigInt.BigInt)
 bigint = do
   s <- sringdigits

@@ -26,7 +26,7 @@ import Control.Alt ((<|>))
 import Data.Argonaut.Decode (parseJson, printJsonDecodeError)
 import Data.Either (Either(..))
 import Data.Maybe (Maybe(..))
-import Lib.Parsing.Combinators (Parser, bigint, fail, finiteString, literal, tail, takeuntil)
+import Lib.Parsing.Combinators (Parser(..), bigint, fail, finiteString, literal, tail, takeuntil)
 import RMRK.Primitives.Address (Address(..))
 import RMRK.Primitives.Base (BaseId(..))
 import RMRK.Primitives.Base as Base
@@ -34,6 +34,7 @@ import RMRK.Primitives.Collection (CollectionId(..), decodeCreatePayload)
 import RMRK.Primitives.Entity (EntityAddress(..))
 import RMRK.Primitives.IssuableId as IssuableId
 import RMRK.Primitives.NFTId (NFTId(..))
+import RMRK.Primitives.Namespace (Namespace(..))
 import RMRK.Primitives.Price (Price(..))
 import RMRK.Primitives.Recipient as Recipient
 import RMRK.Primitives.ResourceId (ResourceId(..))
@@ -56,6 +57,7 @@ interaction =
     <|> buy
     <|> base
     <|> changeissuer
+    <|> emote
 
 root :: Parser Expr
 root = do
@@ -74,7 +76,7 @@ v2 = do
 
 nftid :: Parser NFTId
 nftid = do
-  id <- (takeuntil ':') <|> literal ""
+  id <- (takeuntil "::") <|> literal ""
   pure $ NFTId id
 
 price :: Parser Price
@@ -175,7 +177,7 @@ buyfor = do
   pure (BUY version id (Just $ Recipient.Account address))
 
 a :: Parser String
-a = pure <$> (literal "base-") <*> (takeuntil ':')
+a = pure <$> (literal "base-") <*> (takeuntil "::")
 
 -- <|> do
 --     s <- finiteString
@@ -186,12 +188,12 @@ issuablebaseid = (map IssuableId.Base baseid) <|> (map IssuableId.Collection col
 baseid :: Parser BaseId
 baseid = do
   base' <- literal "base-"
-  rest <- (takeuntil ':')
+  rest <- takeuntil $ "::"
   pure $ BaseId (base' <> rest)
 
 collectionid :: Parser CollectionId
 collectionid = do
-  rest <- (takeuntil ':')
+  rest <- takeuntil $ "::"
   pure $ CollectionId rest
 
 changeissuer :: Parser Stmt
@@ -204,3 +206,25 @@ changeissuer = do
   _ <- seperator
   address <- map Address finiteString
   pure $ CHANGEISSUER version id address
+
+namespace :: Parser Namespace
+namespace = do
+  namespace' <- takeuntil $ "::"
+  _ <- seperator
+  destination <- takeuntil $ "::"
+  case namespace' of
+    "RMRK1" -> pure $ RMRK1 (NFTId destination)
+    "RMRK2" -> pure $ RMRK2 (NFTId destination)
+    "PUBKEY" -> pure $ PUBKEY destination
+    _ -> pure $ EXO destination
+
+emote :: Parser Stmt
+emote = do
+  _ <- literal "EMOTE"
+  _ <- seperator
+  version <- v2
+  _ <- seperator
+  namespace' <- namespace
+  _ <- seperator
+  emotion <- tail
+  pure $ EMOTE version namespace' emotion
