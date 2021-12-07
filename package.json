@@ -1,6 +1,6 @@
 {
-  "name": "purescript-rmrk-parser",
-  "version": "1.0.0",
+  "name": "rmrk-parser",
+  "version": "0.0.1",
   "description": "Start of a rmrk parser in puresccript. For education and getting some great purescript hackers on board down the road :sunglasses",
   "main": "index.js",
   "directories": {},
@@ -12,7 +12,7 @@
     "type": "git",
     "url": "git+https://github.com/rmrk-team/purescript-rmrk-parser.git"
   },
-  "author": "",
+  "author": "Jørn Andre, @yornaath | @gorillatron | @rmrk.app",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/rmrk-team/purescript-rmrk-parser/issues"

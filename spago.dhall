@@ -10,7 +10,7 @@ When creating a new Spago project, you can use
 `spago init --no-comments` or `spago init -C`
 to generate this file without the comments in this block.
 -}
-{ name = "rmrk-protocol-parser"
+{ name = "rmrk-parser"
 , dependencies =
   [ "aff"
   , "argonaut-codecs"
@@ -40,4 +40,7 @@ to generate this file without the comments in this block.
   ]
 , packages = ./packages.dhall
 , sources = [ "src/**/*.purs", "test/**/*.purs" ]
+, license = "(GPL-3.0-only OR MIT)"
+, repository = "https://github.com/rmrk-team/purescript-rmrk-parser.git"
+, author = "Jørn Andre, @yornaath | @gorillatron | @rmrk.app"
 }
