@@ -1,0 +1,25 @@
+{
+  "name": "purescript-rmrk-parser",
+  "version": "1.0.0",
+  "description": "Start of a rmrk parser in puresccript. For education and getting some great purescript hackers on board down the road :sunglasses",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rmrk-team/purescript-rmrk-parser.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/rmrk-team/purescript-rmrk-parser/issues"
+  },
+  "homepage": "https://github.com/rmrk-team/purescript-rmrk-parser#readme",
+  "devDependencies": {
+    "spago": "^0.20.3"
+  }
+}
