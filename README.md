@@ -1,18 +1,15 @@
-# purescript-rmrk-protocol-parser
-### rmrk 2.0.0 protocol purescript parser
+# purescript-rmrk-parser
 
-Start of a rmrk parser in puresccript. For education and getting some great purescript hackers on board down the road :sunglasses
+### RMRK 2.0.0 protocol purescript parser
+
+RMRK protocoll parser and primitives in purescript.
 
 ## Goal
 
-Write a dumb protocol parser. Spec of protocol consolidation is not defined or handled in this package.
-
-### Run Main
-```bash
-spago run
-```
+Write a dumb protocol parser that parses RMRK strings to strong rich types. Spec of protocol consolidation is not defined or handled in this package.
 
 ### Run Tests
+
 ```bash
-spago test
+npm run test
 ```
