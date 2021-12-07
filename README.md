@@ -4,6 +4,10 @@
 
 RMRK protocoll parser and primitives in purescript.
 
+## Spec
+Go to the spec repo for full documentation of the RMRK v2 spec.
+[rmrk-team/rmrk-spec/tree/master/standards/rmrk2.0.0](https://github.com/rmrk-team/rmrk-spec/tree/master/standards/rmrk2.0.0)
+
 ## Goal
 
 Write a dumb protocol parser that parses RMRK strings to strong rich types. Spec of protocol consolidation is not defined or handled in this package.
