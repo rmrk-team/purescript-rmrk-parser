@@ -7,6 +7,7 @@ import Data.Maybe (Maybe)
 import Data.Show.Generic (genericShow)
 import RMRK.Primitives.Address (Address)
 import RMRK.Primitives.Base (Base, BaseId, BaseSlot, BaseSlotAction, EquippableAction)
+import RMRK.Primitives.Collection (CollectionId(..))
 import RMRK.Primitives.Collection as Collection
 import RMRK.Primitives.Entity (EntityAddress)
 import RMRK.Primitives.IssuableId (IssuableId)
@@ -41,6 +42,7 @@ data Stmt
   | EMOTE Version Namespace String
   | EQUIP Version NFTId BaseSlotAction
   | EQUIPPABLE Version BaseId BaseSlot EquippableAction
+  | LOCK Version CollectionId
 
 derive instance genericStmt :: Generic Stmt _
 

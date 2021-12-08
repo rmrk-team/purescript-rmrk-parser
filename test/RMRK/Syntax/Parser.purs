@@ -211,5 +211,10 @@ parsertests =
           parsed = runParser parser "rmrk::EQUIPPABLE::2.0.0::base-575878273-kanaria_epic_birds::wing_slot_1::-collection1,collection2"
         parsed `shouldEqual` (Right $ Tuple (EQUIPPABLE V2 (BaseId "base-575878273-kanaria_epic_birds") (BaseSlot "wing_slot_1") (MakeUnequippable [ CollectionId "collection1", CollectionId "collection2" ])) "")
       pending "feature complete"
+    describe "Lock" do
+      it "should parse correctly" do
+        let
+          parsed = runParser parser "rmrk::LOCK::2.0.0::0aff6865bed3a66b-DLEP"
+        parsed `shouldEqual` (Right $ Tuple (LOCK V2 (CollectionId "0aff6865bed3a66b-DLEP")) "")
 
 --rmrk::EQUIP::2.0.0::5105000-0aff6865bed3a66b-DLEP-ARMOR-00000001::base_1.slot_1

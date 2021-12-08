@@ -63,6 +63,7 @@ interaction =
     <|> emote
     <|> equip
     <|> equippable
+    <|> lock
 
 root :: Parser Expr
 root = do
@@ -282,3 +283,12 @@ equippable = do
   case action of
     Right action' -> pure $ EQUIPPABLE version baseid' (BaseSlot slot) action'
     Left error -> fail error
+
+lock :: Parser Stmt
+lock = do
+  _ <- literal "LOCK"
+  _ <- seperator
+  version <- v2
+  _ <- seperator
+  baseid' <- collectionid
+  pure $ LOCK version baseid'
