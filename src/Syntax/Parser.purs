@@ -290,5 +290,5 @@ lock = do
   _ <- seperator
   version <- v2
   _ <- seperator
-  baseid' <- collectionid
-  pure $ LOCK version baseid'
+  collectionid' <- collectionid
+  pure $ LOCK version collectionid'
