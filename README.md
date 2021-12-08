@@ -4,7 +4,7 @@
 
 RMRK protocoll parser and primitives in purescript.
 
-![Build & Test](https://github.com/rmrk-team/purescript-rmrk-parser/.github/workflows/build_and_test.yml/badge.svg)
+![Build & Test](https://github.com/rmrk-team/purescript-rmrk-parser/actions/workflows/build_and_test.yml/badge.svg)
 
 ## Spec
 
