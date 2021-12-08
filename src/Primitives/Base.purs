@@ -11,6 +11,7 @@ import Data.Maybe (Maybe(..))
 import Data.Show.Generic (genericShow)
 import Data.Symbol (SProxy(..), reflectSymbol)
 import Lib.Data.HomogenousRecord (HomogenousRecord)
+import RMRK.Primitives.Collection (CollectionId)
 import RMRK.Primitives.Part (Part)
 
 type Base
@@ -78,8 +79,19 @@ instance decodeJsonBaseType :: DecodeJson BaseType where
     string <- decodeJson json
     note (TypeMismatch "BaseType") (baseTypeFromString string)
 
+newtype BaseSlot
+  = BaseSlot String
+
+derive instance geBaseSlot :: Generic BaseSlot _
+
+instance showBaseSlot :: Show BaseSlot where
+  show = genericShow
+
+instance eqBaseSlot :: Eq BaseSlot where
+  eq = genericEq
+
 data BaseSlotAction
-  = Equip String
+  = Equip BaseSlot
   | Unequip
 
 derive instance geBaseSlotAction :: Generic BaseSlotAction _
@@ -88,4 +100,17 @@ instance showBaseSlotAction :: Show BaseSlotAction where
   show = genericShow
 
 instance eqBaseSlotAction :: Eq BaseSlotAction where
+  eq = genericEq
+
+data EquippableAction
+  = MakeEquippable (Array CollectionId)
+  | MakeUnequippable (Array CollectionId)
+  | Any
+
+derive instance geEquippableAction :: Generic EquippableAction _
+
+instance showEquippableAction :: Show EquippableAction where
+  show = genericShow
+
+instance eqEquippableAction :: Eq EquippableAction where
   eq = genericEq

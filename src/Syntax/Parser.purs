@@ -27,10 +27,11 @@ import Control.Alt ((<|>))
 import Data.Argonaut.Decode (parseJson, printJsonDecodeError)
 import Data.Either (Either(..))
 import Data.Maybe (Maybe(..))
-import Data.String (length, toLower)
+import Data.String (Pattern(..), Replacement(..), length, replace, split, toLower, trim)
+import Data.String.Utils (startsWith)
 import Lib.Parsing.Combinators (Parser, bigint, fail, finiteString, literal, tail, takeuntil)
 import RMRK.Primitives.Address (Address(..))
-import RMRK.Primitives.Base (BaseId(..), BaseSlotAction(..))
+import RMRK.Primitives.Base (BaseId(..), BaseSlot(..), BaseSlotAction(..), EquippableAction(..))
 import RMRK.Primitives.Base as Base
 import RMRK.Primitives.Collection (CollectionId(..), decodeCreatePayload)
 import RMRK.Primitives.Entity (EntityAddress(..))
@@ -61,6 +62,7 @@ interaction =
     <|> changeissuer
     <|> emote
     <|> equip
+    <|> equippable
 
 root :: Parser Expr
 root = do
@@ -244,6 +246,39 @@ equip = do
   if (length slot) > 0 then case toLower slot of
     "null" -> pure $ EQUIP version id (Unequip)
     "false" -> pure $ EQUIP version id (Unequip)
-    slot' -> pure $ EQUIP version id (Equip slot')
+    slot' -> pure $ EQUIP version id (Equip $ BaseSlot slot')
   else
     pure $ EQUIP version id (Unequip)
+
+equippable :: Parser Stmt
+equippable = do
+  _ <- literal "EQUIPPABLE"
+  _ <- seperator
+  version <- v2
+  _ <- seperator
+  baseid' <- baseid
+  _ <- seperator
+  slot <- takeuntil $ "::"
+  _ <- seperator
+  collections <- tail
+  let
+    add = startsWith "+" collections
+
+    remove = startsWith "-" collections
+
+    any = collections == "*"
+
+    ids = collections # replace (Pattern (if add then "+" else "-")) (Replacement "") # trim # split (Pattern ",")
+
+    action =
+      if add then
+        Right $ (MakeEquippable (CollectionId `map` ids))
+      else if remove then
+        Right $ (MakeUnequippable (CollectionId `map` ids))
+      else if any then
+        Right $ Any
+      else
+        Left ("Cannot parse collections string: " <> collections)
+  case action of
+    Right action' -> pure $ EQUIPPABLE version baseid' (BaseSlot slot) action'
+    Left error -> fail error

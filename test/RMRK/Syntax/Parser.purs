@@ -13,7 +13,7 @@ import Effect.Aff (Error)
 import Lib.Data.HomogenousRecord (HomogenousRecord(..))
 import Lib.Parsing.Combinators (runParser)
 import RMRK.Primitives.Address (Address(..))
-import RMRK.Primitives.Base (BaseId(..), BaseSlotAction(..), BaseType(..))
+import RMRK.Primitives.Base (BaseId(..), BaseSlot(..), BaseSlotAction(..), BaseType(..), EquippableAction(..))
 import RMRK.Primitives.Collection (CollectionId(..))
 import RMRK.Primitives.Entity as EntityAddress
 import RMRK.Primitives.Equippable (Equippable(..))
@@ -178,11 +178,12 @@ parsertests =
         let
           parsed = runParser parser "rmrk::EMOTE::2.0.0::subsocial:like::5105000-0aff6865bed3a66b-DLEP-DL15-00000001::1F389"
         parsed `shouldEqual` (Right $ Tuple (EMOTE V2 (EXO "5105000-0aff6865bed3a66b-DLEP-DL15-00000001") "1F389") "")
+      pending "feature complete"
     describe "Equip" do
       it "should parse correctly when equiping" do
         let
           parsed = runParser parser "rmrk::EQUIP::2.0.0::5105000-0aff6865bed3a66b-DLEP-ARMOR-00000001::base_1.slot_1"
-        parsed `shouldEqual` (Right $ Tuple (EQUIP V2 (NFTId "5105000-0aff6865bed3a66b-DLEP-ARMOR-00000001") (Equip "base_1.slot_1")) "")
+        parsed `shouldEqual` (Right $ Tuple (EQUIP V2 (NFTId "5105000-0aff6865bed3a66b-DLEP-ARMOR-00000001") (Equip $ BaseSlot "base_1.slot_1")) "")
       it "should parse correctly when un-equiping with empty string" do
         let
           parsed = runParser parser "rmrk::EQUIP::2.0.0::5105000-0aff6865bed3a66b-DLEP-ARMOR-00000001::"
@@ -195,5 +196,20 @@ parsertests =
         let
           parsed = runParser parser "rmrk::EQUIP::2.0.0::5105000-0aff6865bed3a66b-DLEP-ARMOR-00000001::null"
         parsed `shouldEqual` (Right $ Tuple (EQUIP V2 (NFTId "5105000-0aff6865bed3a66b-DLEP-ARMOR-00000001") (Unequip)) "")
+      pending "feature complete"
+    describe "Equippable" do
+      it "should parse correctly when making equippable any" do
+        let
+          parsed = runParser parser "rmrk::EQUIPPABLE::2.0.0::base-575878273-kanaria_epic_birds::wing_slot_1::*"
+        parsed `shouldEqual` (Right $ Tuple (EQUIPPABLE V2 (BaseId "base-575878273-kanaria_epic_birds") (BaseSlot "wing_slot_1") (Any)) "")
+      it "should parse correctly when making equippable a list of collections" do
+        let
+          parsed = runParser parser "rmrk::EQUIPPABLE::2.0.0::base-575878273-kanaria_epic_birds::wing_slot_1::+collection1,collection2"
+        parsed `shouldEqual` (Right $ Tuple (EQUIPPABLE V2 (BaseId "base-575878273-kanaria_epic_birds") (BaseSlot "wing_slot_1") (MakeEquippable [ CollectionId "collection1", CollectionId "collection2" ])) "")
+      it "should parse correctly when making un-equippable a list of collections" do
+        let
+          parsed = runParser parser "rmrk::EQUIPPABLE::2.0.0::base-575878273-kanaria_epic_birds::wing_slot_1::-collection1,collection2"
+        parsed `shouldEqual` (Right $ Tuple (EQUIPPABLE V2 (BaseId "base-575878273-kanaria_epic_birds") (BaseSlot "wing_slot_1") (MakeUnequippable [ CollectionId "collection1", CollectionId "collection2" ])) "")
+      pending "feature complete"
 
 --rmrk::EQUIP::2.0.0::5105000-0aff6865bed3a66b-DLEP-ARMOR-00000001::base_1.slot_1

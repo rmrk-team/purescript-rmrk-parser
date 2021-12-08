@@ -11,7 +11,7 @@ import RMRK.Syntax.Parser (parser)
 main :: Effect Unit
 main = do
   let
-    stmts = 14
+    stmts = 20
 
     r = range 0 (20000 / stmts)
   logShow "parsing 20 000 remarks"
@@ -19,6 +19,8 @@ main = do
   for_ r \_ -> do
     let
       _ = runParser parser "rmrk::LIST::2.0.0::5105000-0aff6865bed3a66b-VALHELLO-POTION_HEAL-00000001::10000000000"
+
+      _ = runParser parser "rmrk::BURN::2.0.0::5105000-0aff6865bed3a66b-VALHELLO-POTION_HEAL-00000001"
 
       _ = runParser parser "rmrk::BURN::2.0.0::5105000-0aff6865bed3a66b-VALHELLO-POTION_HEAL-00000001"
 
@@ -36,6 +38,8 @@ main = do
 
       _ = runParser parser ("rmrk::CREATE::2.0.0::" <> createCollectionPayloadJson)
 
+      _ = runParser parser ("rmrk::CREATE::2.0.0::" <> createCollectionPayloadJson)
+
       _ = runParser parser "rmrk::EMOTE::2.0.0::RMRK1::5105000-0aff6865bed3a66b-DLEP-DL15-00000001::1F389"
 
       _ = runParser parser "rmrk::EMOTE::2.0.0::RMRK2::5105000-0aff6865bed3a66b-DLEP-DL15-00000001::1F389"
@@ -43,6 +47,14 @@ main = do
       _ = runParser parser "rmrk::EMOTE::2.0.0::PUBKEY::5105000-0aff6865bed3a66b-DLEP-DL15-00000001::1F389"
 
       _ = runParser parser "rmrk::EMOTE::2.0.0::subsocial:like::5105000-0aff6865bed3a66b-DLEP-DL15-00000001::1F389"
+
+      _ = runParser parser "rmrk::EMOTE::2.0.0::subsocial:like::5105000-0aff6865bed3a66b-DLEP-DL15-00000001::1F389"
+
+      _ = runParser parser "rmrk::EQUIPPABLE::2.0.0::base-575878273-kanaria_epic_birds::wing_slot_1::*"
+
+      _ = runParser parser "rmrk::EQUIPPABLE::2.0.0::base-575878273-kanaria_epic_birds::wing_slot_1::+collection1,collection2"
+
+      _ = runParser parser "rmrk::EQUIPPABLE::2.0.0::base-575878273-kanaria_epic_birds::wing_slot_1::-collection1,collection2"
 
       _ = runParser parser basejson
     pure unit

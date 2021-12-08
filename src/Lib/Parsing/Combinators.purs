@@ -1,6 +1,6 @@
 module Lib.Parsing.Combinators
   ( Parser(..)
-  , ParserError
+  , ParserError(..)
   , anyChar
   , anySpace
   , bigint
