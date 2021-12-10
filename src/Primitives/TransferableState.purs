@@ -5,8 +5,11 @@ import Data.Argonaut.Core as AG
 import Data.Argonaut.Decode (class DecodeJson, JsonDecodeError(..))
 import Data.Argonaut.Encode (class EncodeJson, encodeJson)
 import Data.Either (Either(..))
+import Data.Eq.Generic (genericEq)
+import Data.Generic.Rep (class Generic)
 import Data.Int (decimal, fromStringAs, toStringAs)
 import Data.Maybe (Maybe(..))
+import Data.Show.Generic (genericShow)
 
 data TransferableState
   = Transferable
@@ -14,18 +17,24 @@ data TransferableState
   | AfterBlock Int
   | ForBlocks Int
 
+derive instance geTransferableState :: Generic TransferableState _
+
+instance showTransferableState :: Show TransferableState where
+  show = genericShow
+
+instance eqTransferableState :: Eq TransferableState where
+  eq = genericEq
+
 instance encodeJsonTransferableState :: EncodeJson TransferableState where
   encodeJson state = encodeJson $ toInt state
 
 instance decodeJsonTransferableState :: DecodeJson TransferableState where
-  decodeJson a = case AG.toString a of
-    Just s -> do
-      let
-        parsedInt = fromStringAs decimal s
-      case parsedInt of
-        Just n -> Right $ fromInt n
-        Nothing -> Left $ TypeMismatch "TransferableState: has to be a valid integer."
-    Nothing -> Left $ TypeMismatch "TransferableState: has to be a valid integer."
+  decodeJson a = do
+    let
+      decodedInt = fromStringAs decimal (AG.stringify a)
+    case decodedInt of
+      Just n -> Right $ fromInt n
+      Nothing -> Left $ TypeMismatch ("TransferableState[could not be decoded]: has to be a valid integer. Received: [" <> AG.stringify a <> "]")
 
 toInt :: TransferableState -> Int
 toInt state = case state of

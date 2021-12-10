@@ -11,7 +11,7 @@ import RMRK.Primitives.Collection (CollectionId)
 import RMRK.Primitives.Collection as Collection
 import RMRK.Primitives.Entity (EntityAddress)
 import RMRK.Primitives.IssuableId (IssuableId)
-import RMRK.Primitives.NFT (NFTId)
+import RMRK.Primitives.NFT (NFTId, NFTBase)
 import RMRK.Primitives.Namespace (Namespace)
 import RMRK.Primitives.Price (Price)
 import RMRK.Primitives.Recipient (Recipient)
@@ -43,6 +43,7 @@ data Stmt
   | EQUIP Version NFTId BaseSlotAction
   | EQUIPPABLE Version BaseId BaseSlot EquippableAction
   | LOCK Version CollectionId
+  | MINT Version NFTBase (Maybe Recipient)
 
 derive instance genericStmt :: Generic Stmt _
 

@@ -12,6 +12,7 @@ module Lib.Parsing.Combinators
   , isChar
   , isDigit
   , isSpace
+  , liftParser
   , literal
   , runParser
   , someSpace
@@ -96,6 +97,9 @@ instance alternativeParser :: (Alt Parser, Plus Parser) => Alternative Parser
 
 instance lazyParser :: Lazy (Parser (List a)) where
   defer f = Parser \s -> runParser (f unit) s
+
+liftParser :: forall a. a -> Parser a
+liftParser a = Parser \s -> Right $ Tuple a s
 
 isSpace :: Char -> Boolean
 isSpace = isSpaceImpl

@@ -24,19 +24,20 @@ module RMRK.Syntax.Parser
 
 import Prelude
 import Control.Alt ((<|>))
-import Data.Argonaut.Decode (parseJson, printJsonDecodeError)
+import Data.Argonaut.Decode (JsonDecodeError(..), parseJson, printJsonDecodeError)
 import Data.Either (Either(..))
-import Data.Maybe (Maybe(..))
+import Data.Maybe (Maybe(..), maybe)
 import Data.String (Pattern(..), Replacement(..), length, replace, split, toLower, trim)
 import Data.String.Utils (startsWith)
-import Lib.Parsing.Combinators (Parser, bigint, fail, finiteString, literal, tail, takeuntil)
+import JSURI (decodeURIComponent)
+import Lib.Parsing.Combinators (Parser, ParserError(..), bigint, fail, finiteString, liftParser, literal, tail, takeuntil)
 import RMRK.Primitives.Address (Address(..))
 import RMRK.Primitives.Base (BaseId(..), BaseSlot(..), BaseSlotAction(..), EquippableAction(..))
 import RMRK.Primitives.Base as Base
 import RMRK.Primitives.Collection (CollectionId(..), decodeCreatePayload)
 import RMRK.Primitives.Entity (EntityAddress(..))
 import RMRK.Primitives.IssuableId as IssuableId
-import RMRK.Primitives.NFT (NFTId(..))
+import RMRK.Primitives.NFT (NFTId(..), decodeNFTStandard, isnftid)
 import RMRK.Primitives.Namespace (Namespace(..))
 import RMRK.Primitives.Price (Price(..))
 import RMRK.Primitives.Recipient as Recipient
@@ -64,6 +65,7 @@ interaction =
     <|> equip
     <|> equippable
     <|> lock
+    <|> mint
 
 root :: Parser Expr
 root = do
@@ -102,7 +104,6 @@ entity = do
     "NFT" -> pure $ NFT $ NFTId id
     _ -> fail ("unrecognized type " <> type')
 
--- rmrk::BASE::{version}::{html_encoded_json}
 base :: Parser Stmt
 base = do
   _ <- literal "BASE"
@@ -110,12 +111,14 @@ base = do
   version <- v2
   _ <- seperator
   htmlEncodedbaseJson <- tail
-  case parseJson htmlEncodedbaseJson of
-    Left error -> fail (printJsonDecodeError error)
-    Right json -> do
-      case Base.fromJson json of
-        Left error' -> fail (printJsonDecodeError error')
-        Right base' -> pure $ BASE version base'
+  case decodeURIComponent htmlEncodedbaseJson of
+    Nothing -> do fail "could not url decode base json"
+    Just baseJson -> case parseJson baseJson of
+      Left error -> fail (printJsonDecodeError error)
+      Right json -> do
+        case Base.fromJson json of
+          Left error' -> fail (printJsonDecodeError error')
+          Right base' -> pure $ BASE version base'
 
 create :: Parser Stmt
 create = do
@@ -292,3 +295,37 @@ lock = do
   _ <- seperator
   collectionid' <- collectionid
   pure $ LOCK version collectionid'
+
+mint :: Parser Stmt
+mint = do
+  _ <- literal "MINT"
+  _ <- seperator
+  version <- v2
+  _ <- seperator
+  (mintforrecipient version) <|> (mintforself version)
+
+mintforself :: Version -> Parser Stmt
+mintforself version = do
+  htmlEncodedNFTnJson <- takeuntil $ "::"
+  case decodeURIComponent htmlEncodedNFTnJson of
+    Nothing -> do fail "could not url decode NFT json"
+    Just nftjson -> case parseJson nftjson of
+      Left error -> fail (printJsonDecodeError error)
+      Right json -> do
+        case decodeNFTStandard json of
+          Left error' -> fail (printJsonDecodeError error')
+          Right mintPayload -> pure $ MINT version mintPayload Nothing
+
+mintforrecipient :: Version -> Parser Stmt
+mintforrecipient version = do
+  htmlEncodedNFTnJson <- takeuntil $ "::"
+  _ <- seperator
+  recipient <- tail
+  case decodeURIComponent htmlEncodedNFTnJson of
+    Nothing -> do fail "could not url decode NFT json"
+    Just nftjson -> case parseJson nftjson of
+      Left error -> fail (printJsonDecodeError error)
+      Right json -> do
+        case decodeNFTStandard json of
+          Left error' -> fail (printJsonDecodeError error')
+          Right mintPayload -> pure $ MINT version mintPayload (Just $ if isnftid recipient then Recipient.NFT $ NFTId recipient else Recipient.Account $ Address recipient)

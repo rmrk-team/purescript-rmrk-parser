@@ -18,12 +18,13 @@ import RMRK.Primitives.Collection (CollectionId(..))
 import RMRK.Primitives.Entity as EntityAddress
 import RMRK.Primitives.Equippable (Equippable(..))
 import RMRK.Primitives.IssuableId (IssuableId(..))
-import RMRK.Primitives.NFT (NFTId(..))
+import RMRK.Primitives.NFT (NFTId(..), NFTBase)
 import RMRK.Primitives.Namespace (Namespace(..))
 import RMRK.Primitives.Part (PartId(..), PartType(..), Part)
 import RMRK.Primitives.Price (Price(..))
 import RMRK.Primitives.Recipient as Recipient
 import RMRK.Primitives.Resource (ResourceId(..))
+import RMRK.Primitives.TransferableState (TransferableState(..))
 import RMRK.Primitives.Version (Version(..))
 import RMRK.Syntax (Stmt(..))
 import RMRK.Syntax.Parser (parser)
@@ -216,5 +217,38 @@ parsertests =
         let
           parsed = runParser parser "rmrk::LOCK::2.0.0::0aff6865bed3a66b-DLEP"
         parsed `shouldEqual` (Right $ Tuple (LOCK V2 (CollectionId "0aff6865bed3a66b-DLEP")) "")
+      pending "feature complete"
+    describe "Mint" do
+      let
+        expectedPayload :: TransferableState -> NFTBase
+        expectedPayload transferable =
+          { "collection": "0aff6865bed3a66b-DLEP"
+          , "symbol": "DL15"
+          , "transferable": transferable
+          , "sn": "00000001"
+          , "metadata": "ipfs://ipfs/QmavoTVbVHnGEUztnBT2p3rif3qBPeCfyyUE5v4Z7oFvs4"
+          }
+      it "should parse correctly when minting for self" do
+        let
+          transferable = runParser parser "rmrk::MINT::2.0.0::%7B%22collection%22%3A%220aff6865bed3a66b-DLEP%22%2C%22symbol%22%3A%22DL15%22%2C%22transferable%22%3A1%2C%22sn%22%3A%2200000001%22%2C%22metadata%22%3A%22ipfs%3A%2F%2Fipfs%2FQmavoTVbVHnGEUztnBT2p3rif3qBPeCfyyUE5v4Z7oFvs4%22%7D"
+
+          nontransferable = runParser parser "rmrk::MINT::2.0.0::%7B%22collection%22%3A%220aff6865bed3a66b-DLEP%22%2C%22symbol%22%3A%22DL15%22%2C%22transferable%22%3A0%2C%22sn%22%3A%2200000001%22%2C%22metadata%22%3A%22ipfs%3A%2F%2Fipfs%2FQmavoTVbVHnGEUztnBT2p3rif3qBPeCfyyUE5v4Z7oFvs4%22%7D"
+
+          afterblock = runParser parser "rmrk::MINT::2.0.0::%7B%22collection%22%3A%220aff6865bed3a66b-DLEP%22%2C%22symbol%22%3A%22DL15%22%2C%22transferable%22%3A100%2C%22sn%22%3A%2200000001%22%2C%22metadata%22%3A%22ipfs%3A%2F%2Fipfs%2FQmavoTVbVHnGEUztnBT2p3rif3qBPeCfyyUE5v4Z7oFvs4%22%7D"
+
+          beforeblock = runParser parser "rmrk::MINT::2.0.0::%7B%22collection%22%3A%220aff6865bed3a66b-DLEP%22%2C%22symbol%22%3A%22DL15%22%2C%22transferable%22%3A-100%2C%22sn%22%3A%2200000001%22%2C%22metadata%22%3A%22ipfs%3A%2F%2Fipfs%2FQmavoTVbVHnGEUztnBT2p3rif3qBPeCfyyUE5v4Z7oFvs4%22%7D"
+        transferable `shouldEqual` (Right $ Tuple (MINT V2 (expectedPayload Transferable) Nothing) "")
+        nontransferable `shouldEqual` (Right $ Tuple (MINT V2 (expectedPayload Nontransferable) Nothing) "")
+        afterblock `shouldEqual` (Right $ Tuple (MINT V2 (expectedPayload $ AfterBlock 100) Nothing) "")
+        beforeblock `shouldEqual` (Right $ Tuple (MINT V2 (expectedPayload $ ForBlocks 100) Nothing) "")
+      it "should parse correctly when minting for recipient account address" do
+        let
+          parsed = runParser parser "rmrk::MINT::2.0.0::%7B%22collection%22%3A%220aff6865bed3a66b-DLEP%22%2C%22symbol%22%3A%22DL15%22%2C%22transferable%22%3A1%2C%22sn%22%3A%2200000001%22%2C%22metadata%22%3A%22ipfs%3A%2F%2Fipfs%2FQmavoTVbVHnGEUztnBT2p3rif3qBPeCfyyUE5v4Z7oFvs4%22%7D::CpjsLDC1JFyrhm3ftC9Gs4QoyrkHKhZKtK7YqGTRFtTafgp"
+        parsed `shouldEqual` (Right $ Tuple (MINT V2 (expectedPayload Transferable) (Just $ Recipient.Account (Address "CpjsLDC1JFyrhm3ftC9Gs4QoyrkHKhZKtK7YqGTRFtTafgp"))) "")
+      it "should parse correctly when minting for recipient NFT" do
+        let
+          parsed = runParser parser "rmrk::MINT::2.0.0::%7B%22collection%22%3A%220aff6865bed3a66b-DLEP%22%2C%22symbol%22%3A%22DL15%22%2C%22transferable%22%3A1%2C%22sn%22%3A%2200000001%22%2C%22metadata%22%3A%22ipfs%3A%2F%2Fipfs%2FQmavoTVbVHnGEUztnBT2p3rif3qBPeCfyyUE5v4Z7oFvs4%22%7D::5193445-0aff6865bed3a66b-ZOMB-ZOMBBLUE-00000001"
+        parsed `shouldEqual` (Right $ Tuple (MINT V2 (expectedPayload Transferable) (Just $ Recipient.NFT (NFTId "5193445-0aff6865bed3a66b-ZOMB-ZOMBBLUE-00000001"))) "")
+      pending "feature complete"
 
 --rmrk::EQUIP::2.0.0::5105000-0aff6865bed3a66b-DLEP-ARMOR-00000001::base_1.slot_1
