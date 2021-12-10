@@ -9,6 +9,7 @@ import Data.Eq.Generic (genericEq)
 import Data.Generic.Rep (class Generic)
 import Data.Maybe (Maybe(..))
 import Data.Show.Generic (genericShow)
+import RMRK.Primitives.TransferableState (TransferableState)
 
 newtype NFTId
   = NFTId String
@@ -28,12 +29,6 @@ instance decodeJsonNFTId :: DecodeJson NFTId where
   decodeJson a = case toString a of
     Just s -> Right $ NFTId s
     Nothing -> Left $ TypeMismatch "NFTId"
-
-data TransferableState
-  = Transferable
-  | Nontransferable
-  | AfterBlock Number
-  | ForBlocks Number
 
 type NFTStandard
   = { collection :: String
