@@ -24,20 +24,20 @@ module RMRK.Syntax.Parser
 
 import Prelude
 import Control.Alt ((<|>))
-import Data.Argonaut.Decode (JsonDecodeError(..), parseJson, printJsonDecodeError)
+import Data.Argonaut.Decode (parseJson, printJsonDecodeError)
 import Data.Either (Either(..))
-import Data.Maybe (Maybe(..), maybe)
+import Data.Maybe (Maybe(..))
 import Data.String (Pattern(..), Replacement(..), length, replace, split, toLower, trim)
 import Data.String.Utils (startsWith)
 import JSURI (decodeURIComponent)
-import Lib.Parsing.Combinators (Parser, ParserError(..), bigint, fail, finiteString, liftParser, literal, tail, takeuntil)
+import Lib.Parsing.Combinators (Parser, bigint, fail, finiteString, literal, tail, takeuntil)
 import RMRK.Primitives.Address (Address(..))
 import RMRK.Primitives.Base (BaseId(..), BaseSlot(..), BaseSlotAction(..), EquippableAction(..))
 import RMRK.Primitives.Base as Base
 import RMRK.Primitives.Collection (CollectionId(..), decodeCreatePayload)
 import RMRK.Primitives.Entity (EntityAddress(..))
 import RMRK.Primitives.IssuableId as IssuableId
-import RMRK.Primitives.NFT (NFTId(..), decodeNFTStandard, isnftid)
+import RMRK.Primitives.NFT (NFTId(..), decodeNFTbase, isnftid)
 import RMRK.Primitives.Namespace (Namespace(..))
 import RMRK.Primitives.Price (Price(..))
 import RMRK.Primitives.Recipient as Recipient
@@ -312,7 +312,7 @@ mintforself version = do
     Just nftjson -> case parseJson nftjson of
       Left error -> fail (printJsonDecodeError error)
       Right json -> do
-        case decodeNFTStandard json of
+        case decodeNFTbase json of
           Left error' -> fail (printJsonDecodeError error')
           Right mintPayload -> pure $ MINT version mintPayload Nothing
 
@@ -326,6 +326,6 @@ mintforrecipient version = do
     Just nftjson -> case parseJson nftjson of
       Left error -> fail (printJsonDecodeError error)
       Right json -> do
-        case decodeNFTStandard json of
+        case decodeNFTbase json of
           Left error' -> fail (printJsonDecodeError error')
           Right mintPayload -> pure $ MINT version mintPayload (Just $ if isnftid recipient then Recipient.NFT $ NFTId recipient else Recipient.Account $ Address recipient)
