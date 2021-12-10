@@ -54,7 +54,7 @@ The following **interactions** are implemented:
       base's part)
 - [x] [LOCK](https://github.com/rmrk-team/rmrk-spec/blob/master/standards/rmrk2.0.0/interactions/lock.md) (Locking a collection)
 - [x] [MINT](https://github.com/rmrk-team/rmrk-spec/blob/master/standards/rmrk2.0.0/interactions/mint.md) (Minting an NFT inside a collection)
-- [ ] [LIST](https://github.com/rmrk-team/rmrk-spec/blob/master/standards/rmrk2.0.0/interactions/list.md) (List an NFT for sale)
+- [x] [LIST](https://github.com/rmrk-team/rmrk-spec/blob/master/standards/rmrk2.0.0/interactions/list.md) (List an NFT for sale)
 - [ ] [RESADD](https://github.com/rmrk-team/rmrk-spec/blob/master/standards/rmrk2.0.0/interactions/resadd.md) (Add a new resource to an NFT as the collection issuer)
 - [ ] [SEND](https://github.com/rmrk-team/rmrk-spec/blob/master/standards/rmrk2.0.0/interactions/send.md) (Sending an NFT to a recipient)
 - [ ] [SETPROPERTY](https://github.com/rmrk-team/rmrk-spec/blob/master/standards/rmrk2.0.0/interactions/setproperty.md) (Set a custom value on an NFT)
