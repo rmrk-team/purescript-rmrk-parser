@@ -36,11 +36,11 @@ import RMRK.Primitives.Base as Base
 import RMRK.Primitives.Collection (CollectionId(..), decodeCreatePayload)
 import RMRK.Primitives.Entity (EntityAddress(..))
 import RMRK.Primitives.IssuableId as IssuableId
-import RMRK.Primitives.NFTId (NFTId(..))
+import RMRK.Primitives.NFT (NFTId(..))
 import RMRK.Primitives.Namespace (Namespace(..))
 import RMRK.Primitives.Price (Price(..))
 import RMRK.Primitives.Recipient as Recipient
-import RMRK.Primitives.ResourceId (ResourceId(..))
+import RMRK.Primitives.Resource (ResourceId(..))
 import RMRK.Primitives.Version (Version(..))
 import RMRK.Syntax (Expr(..), Stmt(..))
 

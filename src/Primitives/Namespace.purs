@@ -15,7 +15,7 @@ import Data.Eq.Generic (genericEq)
 import Data.Generic.Rep (class Generic)
 import Data.Show.Generic (genericShow)
 import Data.Symbol (SProxy(..), reflectSymbol)
-import RMRK.Primitives.NFTId (NFTId)
+import RMRK.Primitives.NFT (NFTId)
 
 data Namespace
   = RMRK1 NFTId

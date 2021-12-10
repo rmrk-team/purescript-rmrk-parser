@@ -8,7 +8,7 @@ import Data.Argonaut.Encode (encodeJson)
 import Data.Either (Either(..))
 import Effect.Aff (Error)
 import RMRK.Primitives.Equippable (Equippable(..))
-import RMRK.Primitives.NFTId (NFTId(..))
+import RMRK.Primitives.NFT (NFTId(..))
 import Test.Spec (SpecT, describe, it, pending)
 import Test.Spec.Assertions (fail, shouldEqual)
 

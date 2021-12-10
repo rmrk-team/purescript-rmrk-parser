@@ -11,7 +11,7 @@ import Data.Eq.Generic (genericEq)
 import Data.Generic.Rep (class Generic)
 import Data.Maybe (Maybe(..))
 import Data.Show.Generic (genericShow)
-import RMRK.Primitives.NFTId (NFTId)
+import RMRK.Primitives.NFT (NFTId)
 
 data Equippable
   = Items (Array NFTId)

@@ -1,4 +1,4 @@
-module RMRK.Primitives.ResourceId where
+module RMRK.Primitives.Resource where
 
 import Prelude
 import Data.Eq.Generic (genericEq)

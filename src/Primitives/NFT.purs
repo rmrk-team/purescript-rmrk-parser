@@ -1,4 +1,4 @@
-module RMRK.Primitives.NFTId where
+module RMRK.Primitives.NFT where
 
 import Prelude
 import Data.Argonaut.Core (toString)
@@ -28,3 +28,17 @@ instance decodeJsonNFTId :: DecodeJson NFTId where
   decodeJson a = case toString a of
     Just s -> Right $ NFTId s
     Nothing -> Left $ TypeMismatch "NFTId"
+
+data TransferableState
+  = Transferable
+  | Nontransferable
+  | AfterBlock Number
+  | ForBlocks Number
+
+type NFTStandard
+  = { collection :: String
+    , symbol :: String
+    , transferable :: TransferableState
+    , sn :: String
+    , metadata :: String
+    }
