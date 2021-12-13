@@ -1,4 +1,4 @@
-module Test.RMRK.Syntax.Parser.Performance where
+module Test.RMRK.Parser.Performance where
 
 import Prelude
 import Data.Array (range)
@@ -6,7 +6,7 @@ import Data.Foldable (for_)
 import Effect (Effect)
 import Effect.Class.Console (logShow, time, timeEnd)
 import Lib.Parsing.Combinators (runParser)
-import RMRK.Syntax.Parser (parser)
+import RMRK.Parser (parser)
 
 main :: Effect Unit
 main = do

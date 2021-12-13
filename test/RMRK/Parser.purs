@@ -1,4 +1,4 @@
-module Test.RMRK.Syntax.Parser
+module Test.RMRK.Parser
   ( parsertests
   ) where
 
@@ -27,7 +27,7 @@ import RMRK.Primitives.Resource (Resource, ResourceId(..))
 import RMRK.Primitives.TransferableState (TransferableState(..))
 import RMRK.Primitives.Version (Version(..))
 import RMRK.Syntax (Stmt(..))
-import RMRK.Syntax.Parser (parser)
+import RMRK.Parser (parser)
 import Test.Spec (SpecT, describe, it, pending)
 import Test.Spec.Assertions (shouldEqual)
 

@@ -1,4 +1,4 @@
-module RMRK.Syntax.Parser
+module RMRK.Parser
   ( parse
   , parser
   , accept
@@ -46,7 +46,7 @@ import RMRK.Primitives.Resource (ResourceId(..), decodeResource)
 import RMRK.Primitives.Version (Version(..))
 import RMRK.Syntax (Expr(..), Stmt(..))
 
--- | Takes a string and produces a valid RMRK Syntax statement
+-- | Takes a string and produces a valid RMRK.Syntax Stmt
 -- |
 -- | ```purescript
 -- | it "should parse correctly with recipient" do
