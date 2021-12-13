@@ -39,7 +39,7 @@ import RMRK.Primitives.NFT (NFTId(..), decodeNFTbase, isnftid)
 import RMRK.Primitives.Namespace (Namespace(..))
 import RMRK.Primitives.Price (Price(..))
 import RMRK.Primitives.Recipient as Recipient
-import RMRK.Primitives.Resource (ResourceId(..))
+import RMRK.Primitives.Resource (ResourceId(..), decodeResource)
 import RMRK.Primitives.Version (Version(..))
 import RMRK.Syntax (Expr(..), Stmt(..))
 
@@ -64,6 +64,7 @@ interaction =
     <|> equippable
     <|> lock
     <|> mint
+    <|> resadd
 
 root :: Parser Expr
 root = do
@@ -329,3 +330,21 @@ mintforrecipient version = do
         case decodeNFTbase json of
           Left error' -> fail (printJsonDecodeError error')
           Right mintPayload -> pure $ MINT version mintPayload (Just $ if isnftid recipient then Recipient.NFT $ NFTId recipient else Recipient.Account $ Address recipient)
+
+resadd :: Parser Stmt
+resadd = do
+  _ <- literal "RESADD"
+  _ <- seperator
+  version <- v2
+  _ <- seperator
+  nftid' <- nftid
+  _ <- seperator
+  htmlEncodedResourceJSON <- tail
+  case decodeURIComponent htmlEncodedResourceJSON of
+    Nothing -> do fail "could not url decode resource json"
+    Just resourceJson -> case parseJson resourceJson of
+      Left error -> fail (printJsonDecodeError error)
+      Right json -> do
+        case decodeResource json of
+          Left error' -> fail (printJsonDecodeError error')
+          Right resource' -> pure $ RESADD version nftid' resource'

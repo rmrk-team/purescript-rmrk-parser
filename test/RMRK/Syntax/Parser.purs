@@ -23,7 +23,7 @@ import RMRK.Primitives.Namespace (Namespace(..))
 import RMRK.Primitives.Part (PartId(..), PartType(..), Part)
 import RMRK.Primitives.Price (Price(..))
 import RMRK.Primitives.Recipient as Recipient
-import RMRK.Primitives.Resource (ResourceId(..))
+import RMRK.Primitives.Resource (Resource, ResourceId(..))
 import RMRK.Primitives.TransferableState (TransferableState(..))
 import RMRK.Primitives.Version (Version(..))
 import RMRK.Syntax (Stmt(..))
@@ -259,6 +259,19 @@ parsertests =
         let
           parsed = runParser parser "rmrk::MINT::2.0.0::%7B%22collection%22%3A%220aff6865bed3a66b-DLEP%22%2C%22symbol%22%3A%22DL15%22%2C%22transferable%22%3A1%2C%22sn%22%3A%2200000001%22%2C%22metadata%22%3A%22ipfs%3A%2F%2Fipfs%2FQmavoTVbVHnGEUztnBT2p3rif3qBPeCfyyUE5v4Z7oFvs4%22%7D::5193445-0aff6865bed3a66b-ZOMB-ZOMBBLUE-00000001"
         parsed `shouldEqual` (Right $ Tuple (MINT V2 (expectedPayload Transferable) (Just $ Recipient.NFT (NFTId "5193445-0aff6865bed3a66b-ZOMB-ZOMBBLUE-00000001"))) "")
+      pending "feature complete"
+    describe "Resadd" do
+      let
+        expectedPayload :: Resource
+        expectedPayload =
+          { "id": ResourceId "V1i6B"
+          , "src": "hash-of-metadata-guest-bird-art-with-jetpack"
+          , "metadata": "hash-of-metadata-with-credits"
+          }
+      it "should parse correctly when minting for self" do
+        let
+          parsed = runParser parser "rmrk::RESADD::2.0.0::5105000-0aff6865bed3a66b-DLEP-DL15-00000001::%7B%22id%22:%22V1i6B%22,%22src%22:%22hash-of-metadata-guest-bird-art-with-jetpack%22,%22metadata%22:%22hash-of-metadata-with-credits%22%7D"
+        parsed `shouldEqual` (Right $ Tuple (RESADD V2 (NFTId "5105000-0aff6865bed3a66b-DLEP-DL15-00000001") expectedPayload) "")
       pending "feature complete"
 
 --rmrk::EQUIP::2.0.0::5105000-0aff6865bed3a66b-DLEP-ARMOR-00000001::base_1.slot_1
