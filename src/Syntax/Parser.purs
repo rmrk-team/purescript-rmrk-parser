@@ -1,5 +1,7 @@
 module RMRK.Syntax.Parser
-  ( accept
+  ( parse
+  , parser
+  , accept
   , base
   , baseid
   , burn
@@ -13,7 +15,6 @@ module RMRK.Syntax.Parser
   , issuablebaseid
   , list
   , nftid
-  , parser
   , price
   , root
   , seperator
@@ -27,8 +28,10 @@ import Data.Either (Either(..))
 import Data.Maybe (Maybe(..))
 import Data.String (Pattern(..), Replacement(..), length, replace, split, toLower, trim)
 import Data.String.Utils (startsWith)
+import Data.Tuple (Tuple(..))
+import Effect.Exception (Error, error)
 import JSURI (decodeURIComponent)
-import Lib.Parsing.Combinators (Parser, bigint, fail, finiteString, literal, tail, takeuntil)
+import Lib.Parsing.Combinators (Parser, ParserError(..), bigint, fail, finiteString, literal, runParser, tail, takeuntil)
 import RMRK.Primitives.Address (Address(..))
 import RMRK.Primitives.Base (BaseId(..), BaseSlot(..), BaseSlotAction(..), EquippableAction(..))
 import RMRK.Primitives.Base as Base
@@ -42,6 +45,23 @@ import RMRK.Primitives.Recipient as Recipient
 import RMRK.Primitives.Resource (ResourceId(..), decodeResource)
 import RMRK.Primitives.Version (Version(..))
 import RMRK.Syntax (Expr(..), Stmt(..))
+
+-- | Takes a string and produces a valid RMRK Syntax statement
+-- |
+-- | ```purescript
+-- | it "should parse correctly with recipient" do
+-- |   let
+-- |     parsed = runParser parser "rmrk::BUY::2.0.0::nftid::recipientid"
+-- |   parsed `shouldEqual` (Right $ Tuple (BUY V2 (NFTId "nftid") (Just $ Recipient.Account $ Address "recipientid")) "")
+-- | it "should parse correctly without recipient" do
+-- |   let
+-- |     parsed = runParser parser "rmrk::BUY::2.0.0::nftid"
+-- |   parsed `shouldEqual` (Right $ Tuple (BUY V2 (NFTId "nftid") Nothing) "")
+-- | ```
+parse :: String -> Either Error Stmt
+parse string = case runParser parser string of
+  Left (ParserError message') -> Left $ error message'
+  Right (Tuple stmt _) -> Right stmt
 
 parser :: Parser Stmt
 parser = do
