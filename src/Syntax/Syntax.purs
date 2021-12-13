@@ -11,7 +11,7 @@ import RMRK.Primitives.Collection (CollectionId)
 import RMRK.Primitives.Collection as Collection
 import RMRK.Primitives.Entity (EntityAddress)
 import RMRK.Primitives.IssuableId (IssuableId)
-import RMRK.Primitives.NFT (NFTBase, NFTId(..))
+import RMRK.Primitives.NFT (NFTBase, NFTId)
 import RMRK.Primitives.Namespace (Namespace)
 import RMRK.Primitives.Price (Price)
 import RMRK.Primitives.Recipient (Recipient)
