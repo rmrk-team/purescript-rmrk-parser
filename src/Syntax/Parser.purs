@@ -1,11 +1,9 @@
 module RMRK.Syntax.Parser
-  ( a
-  , accept
+  ( accept
   , base
   , baseid
   , burn
   , buy
-  , buyfor
   , changeissuer
   , collectionid
   , create
@@ -57,8 +55,8 @@ interaction =
     <|> create
     <|> list
     <|> burn
-    <|> buyfor
     <|> buy
+    <|> send
     <|> base
     <|> changeissuer
     <|> emote
@@ -172,25 +170,27 @@ buy = do
   version <- v2
   _ <- seperator
   id <- nftid
-  pure (BUY version id Nothing)
+  _ <- literal "::" <|> literal ""
+  recipient <- tail
+  if (length recipient) > 0 then
+    pure (BUY version id (Just $ Recipient.Account $ Address recipient))
+  else
+    pure (BUY version id Nothing)
 
-buyfor :: Parser Stmt
-buyfor = do
-  _ <- literal "BUY"
+send :: Parser Stmt
+send = do
+  _ <- literal "SEND"
   _ <- seperator
   version <- v2
   _ <- seperator
   id <- nftid
-  _ <- seperator
-  address <- map Address finiteString
-  pure (BUY version id (Just $ Recipient.Account address))
+  _ <- literal "::" <|> literal ""
+  recipient <- tail
+  if isnftid recipient then
+    pure (SEND version id (Recipient.NFT $ NFTId recipient))
+  else
+    pure (SEND version id (Recipient.Account $ Address recipient))
 
-a :: Parser String
-a = pure <$> (literal "base-") <*> (takeuntil "::")
-
--- <|> do
---     s <- finiteString
---     pure $ Collection $ CollectionId s
 issuablebaseid :: Parser IssuableId.IssuableId
 issuablebaseid = (map IssuableId.Base baseid) <|> (map IssuableId.Collection collectionid)
 

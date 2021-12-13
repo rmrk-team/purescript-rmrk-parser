@@ -88,7 +88,7 @@ instance decodeJsonNFTId :: DecodeJson NFTId where
 isnftid :: String -> Boolean
 isnftid s = do
   let
-    rs = regex "^([0-9]*)-([a-z0-9_]*)-([A-Z]*)-([A-Z]*)-([0-9]+)$" noFlags
+    rs = regex "^([0-9]*)-([a-z0-9_]*)-([A-Z]*)-([A-Z0-9]*)-([0-9]+)$" noFlags
   case rs of
     Right regex -> test regex s
     _ -> false

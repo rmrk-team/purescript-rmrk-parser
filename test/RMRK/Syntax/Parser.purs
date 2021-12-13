@@ -144,6 +144,16 @@ parsertests =
           parsed = runParser parser "rmrk::BUY::2.0.0::nftid"
         parsed `shouldEqual` (Right $ Tuple (BUY V2 (NFTId "nftid") Nothing) "")
       pending "feature complete"
+    describe "Send" do
+      it "should parse correctly with NFT as recipient" do
+        let
+          parsed = runParser parser "rmrk::SEND::2.0.0::5105000-0aff6865bed3a66b-DLEP-DL15-00000001::5105000-0aff6865bed3a66b-DLEP-DL15-00000002"
+        parsed `shouldEqual` (Right $ Tuple (SEND V2 (NFTId "5105000-0aff6865bed3a66b-DLEP-DL15-00000001") (Recipient.NFT $ NFTId "5105000-0aff6865bed3a66b-DLEP-DL15-00000002")) "")
+      it "should parse correctly with account addresss as recipient" do
+        let
+          parsed = runParser parser "rmrk::SEND::2.0.0::5105000-0aff6865bed3a66b-DLEP-DL15-00000001::H9eSvWe34vQDJAWckeTHWSqSChRat8bgKHG39GC1fjvEm7y"
+        parsed `shouldEqual` (Right $ Tuple (SEND V2 (NFTId "5105000-0aff6865bed3a66b-DLEP-DL15-00000001") (Recipient.Account $ Address "H9eSvWe34vQDJAWckeTHWSqSChRat8bgKHG39GC1fjvEm7y")) "")
+      pending "feature complete"
     describe "Accept" do
       it "should parse correctly with Resource as recipient" do
         let
