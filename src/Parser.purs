@@ -29,9 +29,8 @@ import Data.Maybe (Maybe(..))
 import Data.String (Pattern(..), Replacement(..), length, replace, split, toLower, trim)
 import Data.String.Utils (startsWith)
 import Data.Tuple (Tuple(..))
-import Effect.Exception (Error, error)
 import JSURI (decodeURIComponent)
-import Lib.Parsing.Combinators (Parser, ParserError(..), bigint, fail, finiteString, literal, runParser, tail, takeuntil)
+import Lib.Parsing.Combinators (Parser, ParserError, bigint, fail, finiteString, literal, runParser, tail, takeuntil)
 import RMRK.Primitives.Address (Address(..))
 import RMRK.Primitives.Base (BaseId(..), BaseSlot(..), BaseSlotAction(..), EquippableAction(..))
 import RMRK.Primitives.Base as Base
@@ -46,21 +45,17 @@ import RMRK.Primitives.Resource (ResourceId(..), decodeResource)
 import RMRK.Primitives.Version (Version(..))
 import RMRK.Syntax (Expr(..), Stmt(..))
 
--- | Takes a string and produces a valid RMRK.Syntax Stmt
+-- | This is the bread and butter utility of this module.
+-- |  
+-- | Takes a string and produces a valid RMRK.Syntax Stmt or ParserError of String
 -- |
 -- | ```purescript
--- | it "should parse correctly with recipient" do
--- |   let
--- |     parsed = runParser parser "rmrk::BUY::2.0.0::nftid::recipientid"
--- |   parsed `shouldEqual` (Right $ Tuple (BUY V2 (NFTId "nftid") (Just $ Recipient.Account $ Address "recipientid")) "")
--- | it "should parse correctly without recipient" do
--- |   let
--- |     parsed = runParser parser "rmrk::BUY::2.0.0::nftid"
--- |   parsed `shouldEqual` (Right $ Tuple (BUY V2 (NFTId "nftid") Nothing) "")
+-- | parse "rmrk::BUY::2.0.0::5105000-0aff6865bed3a66b-DLEP-DL15-00000001::H9eSvWe34vQDJAWckeTHWSqSChRat8bgKHG39GC1fjvEm7y"
+-- |   == (Right $ BUY V2 (NFTId "5105000-0aff6865bed3a66b-DLEP-DL15-00000001") (Just $ Recipient.Account $ Address "H9eSvWe34vQDJAWckeTHWSqSChRat8bgKHG39GC1fjvEm7y"))
 -- | ```
-parse :: String -> Either Error Stmt
+parse :: String -> Either ParserError Stmt
 parse string = case runParser parser string of
-  Left (ParserError message') -> Left $ error message'
+  Left error' -> Left error'
   Right (Tuple stmt _) -> Right stmt
 
 parser :: Parser Stmt
