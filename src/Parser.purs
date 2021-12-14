@@ -141,12 +141,14 @@ create = do
   version <- v2
   _ <- seperator
   htmlEncodedCollectionJson <- tail
-  case parseJson htmlEncodedCollectionJson of
-    Left error -> fail (printJsonDecodeError error)
-    Right json -> do
-      case decodeCreatePayload json of
-        Left error' -> fail (printJsonDecodeError error')
-        Right collectionCreatePayload -> pure $ CREATE version collectionCreatePayload
+  case decodeURIComponent htmlEncodedCollectionJson of
+    Nothing -> do fail "could not url decode collection json"
+    Just collectionJson -> case parseJson collectionJson of
+      Left error -> fail (printJsonDecodeError error)
+      Right json -> do
+        case decodeCreatePayload json of
+          Left error' -> fail (printJsonDecodeError error')
+          Right collectionCreatePayload -> pure $ CREATE version collectionCreatePayload
 
 accept :: Parser Stmt
 accept = do
