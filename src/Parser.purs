@@ -51,7 +51,10 @@ import RMRK.Syntax (Expr(..), Stmt(..))
 -- |
 -- | ```purescript
 -- | parse "rmrk::BUY::2.0.0::5105000-0aff6865bed3a66b-DLEP-DL15-00000001::H9eSvWe34vQDJAWckeTHWSqSChRat8bgKHG39GC1fjvEm7y"
--- |   == (Right $ BUY V2 (NFTId "5105000-0aff6865bed3a66b-DLEP-DL15-00000001") (Just $ Recipient.Account $ Address "H9eSvWe34vQDJAWckeTHWSqSChRat8bgKHG39GC1fjvEm7y"))
+-- |    == ( Right
+-- |          $ BUY V2 (NFTId "5105000-0aff6865bed3a66b-DLEP-DL15-00000001")
+-- |              (Just $ Recipient.Account $ Address "H9eSvWe34vQDJAWckeTHWSqSChRat8bgKHG39GC1fjvEm7y")
+-- |      )
 -- | ```
 parse :: String -> Either ParserError Stmt
 parse string = case runParser parser string of
