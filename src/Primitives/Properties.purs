@@ -12,9 +12,9 @@ import Data.Maybe (Maybe(..))
 import Data.Show.Generic (genericShow)
 
 type Properties
-  = Map String Property
+  = Map String Attribute
 
-type Property
+type Attribute
   = { _mutation ::
         Maybe
           { allowed :: Boolean
@@ -26,26 +26,26 @@ type Property
                     Maybe String
                 }
           }
-    , type :: PropertyType
-    , value :: PropertyValue
+    , type :: AttributeType
+    , value :: AttributeValue
     }
 
-data PropertyType
+data AttributeType
   = Array
   | Object
   | Int
   | Float
   | String
 
-derive instance gePropertyType :: Generic PropertyType _
+derive instance geAttributeType :: Generic AttributeType _
 
-instance showPropertyType :: Show PropertyType where
+instance showAttributeType :: Show AttributeType where
   show = genericShow
 
-instance eqPropertyType :: Eq PropertyType where
+instance eqAttributeType :: Eq AttributeType where
   eq = genericEq
 
-instance encodeJsonPropertyType :: EncodeJson PropertyType where
+instance encodeJsonAttributeType :: EncodeJson AttributeType where
   encodeJson a = case a of
     Array -> encodeJson "array"
     Object -> encodeJson "object"
@@ -53,7 +53,7 @@ instance encodeJsonPropertyType :: EncodeJson PropertyType where
     Float -> encodeJson "float"
     String -> encodeJson "string"
 
-instance decodeJsonPropertyType :: DecodeJson PropertyType where
+instance decodeJsonAttributeType :: DecodeJson AttributeType where
   decodeJson json = do
     let
       string = toString json
@@ -63,24 +63,24 @@ instance decodeJsonPropertyType :: DecodeJson PropertyType where
       Just "int" -> Right Int
       Just "float" -> Right Float
       Just "string" -> Right String
-      Just invalid -> Left $ TypeMismatch $ "invalid property type: " <> invalid
+      Just invalid -> Left $ TypeMismatch $ "invalid Attribute type: " <> invalid
       Nothing -> Left $ MissingValue
 
-newtype PropertyValue
-  = PropertyValue Json
+newtype AttributeValue
+  = AttributeValue Json
 
-derive instance gePropertyValue :: Generic PropertyValue _
+derive instance geAttributeValue :: Generic AttributeValue _
 
-instance showPropertyValue :: Show PropertyValue where
-  show (PropertyValue json) = "PropertyValue " <> (stringifyWithIndent 2 json)
+instance showAttributeValue :: Show AttributeValue where
+  show (AttributeValue json) = "AttributeValue " <> (stringifyWithIndent 2 json)
 
-instance eqPropertyValue :: Eq PropertyValue where
+instance eqAttributeValue :: Eq AttributeValue where
   eq = genericEq
 
-instance encodeJsonPropertyValue :: EncodeJson PropertyValue where
+instance encodeJsonAttributeValue :: EncodeJson AttributeValue where
   encodeJson a = encodeJson a
 
-instance decodeJsonPropertyValue :: DecodeJson PropertyValue where
+instance decodeJsonAttributeValue :: DecodeJson AttributeValue where
   decodeJson a = decodeJson a
 
 -- export type IProperties = Record<string, IAttribute>;

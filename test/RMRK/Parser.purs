@@ -137,11 +137,11 @@ parsertests =
     describe "Buy" do
       it "should parse correctly with recipient" do
         let
-          parsed = runParser parser "rmrk::BUY::2.0.0::nftid::recipientid"
+          parsed = runParser parser "RMRK::BUY::2.0.0::nftid::recipientid"
         parsed `shouldEqual` (Right $ Tuple (BUY V2 (NFTId "nftid") (Just $ Recipient.Account $ Address "recipientid")) "")
       it "should parse correctly without recipient" do
         let
-          parsed = runParser parser "rmrk::BUY::2.0.0::nftid"
+          parsed = runParser parser "rmrk::buy::2.0.0::nftid"
         parsed `shouldEqual` (Right $ Tuple (BUY V2 (NFTId "nftid") Nothing) "")
       pending "feature complete"
     describe "Send" do
@@ -151,7 +151,7 @@ parsertests =
         parsed `shouldEqual` (Right $ Tuple (SEND V2 (NFTId "5105000-0aff6865bed3a66b-DLEP-DL15-00000001") (Recipient.NFT $ NFTId "5105000-0aff6865bed3a66b-DLEP-DL15-00000002")) "")
       it "should parse correctly with account addresss as recipient" do
         let
-          parsed = runParser parser "rmrk::SEND::2.0.0::5105000-0aff6865bed3a66b-DLEP-DL15-00000001::H9eSvWe34vQDJAWckeTHWSqSChRat8bgKHG39GC1fjvEm7y"
+          parsed = runParser parser "rmrk::send::2.0.0::5105000-0aff6865bed3a66b-DLEP-DL15-00000001::H9eSvWe34vQDJAWckeTHWSqSChRat8bgKHG39GC1fjvEm7y"
         parsed `shouldEqual` (Right $ Tuple (SEND V2 (NFTId "5105000-0aff6865bed3a66b-DLEP-DL15-00000001") (Recipient.Account $ Address "H9eSvWe34vQDJAWckeTHWSqSChRat8bgKHG39GC1fjvEm7y")) "")
       pending "feature complete"
     describe "Accept" do
@@ -197,7 +197,7 @@ parsertests =
         parsed `shouldEqual` (Right $ Tuple (EQUIP V2 (NFTId "5105000-0aff6865bed3a66b-DLEP-ARMOR-00000001") (Equip $ BaseSlot "base_1.slot_1")) "")
       it "should parse correctly when un-equiping with empty string" do
         let
-          parsed = runParser parser "rmrk::EQUIP::2.0.0::5105000-0aff6865bed3a66b-DLEP-ARMOR-00000001::"
+          parsed = runParser parser "rmrk::equip::2.0.0::5105000-0aff6865bed3a66b-DLEP-ARMOR-00000001::"
         parsed `shouldEqual` (Right $ Tuple (EQUIP V2 (NFTId "5105000-0aff6865bed3a66b-DLEP-ARMOR-00000001") (Unequip)) "")
       it "should parse correctly when un-equiping with null" do
         let
@@ -211,7 +211,7 @@ parsertests =
     describe "Equippable" do
       it "should parse correctly when making equippable any" do
         let
-          parsed = runParser parser "rmrk::EQUIPPABLE::2.0.0::base-575878273-kanaria_epic_birds::wing_slot_1::*"
+          parsed = runParser parser "rmrk::equippable::2.0.0::base-575878273-kanaria_epic_birds::wing_slot_1::*"
         parsed `shouldEqual` (Right $ Tuple (EQUIPPABLE V2 (BaseId "base-575878273-kanaria_epic_birds") (BaseSlot "wing_slot_1") (Any)) "")
       it "should parse correctly when making equippable a list of collections" do
         let
@@ -243,7 +243,7 @@ parsertests =
         let
           transferable = runParser parser "rmrk::MINT::2.0.0::%7B%22collection%22%3A%220aff6865bed3a66b-DLEP%22%2C%22symbol%22%3A%22DL15%22%2C%22transferable%22%3A1%2C%22sn%22%3A%2200000001%22%2C%22metadata%22%3A%22ipfs%3A%2F%2Fipfs%2FQmavoTVbVHnGEUztnBT2p3rif3qBPeCfyyUE5v4Z7oFvs4%22%7D"
 
-          nontransferable = runParser parser "rmrk::MINT::2.0.0::%7B%22collection%22%3A%220aff6865bed3a66b-DLEP%22%2C%22symbol%22%3A%22DL15%22%2C%22transferable%22%3A0%2C%22sn%22%3A%2200000001%22%2C%22metadata%22%3A%22ipfs%3A%2F%2Fipfs%2FQmavoTVbVHnGEUztnBT2p3rif3qBPeCfyyUE5v4Z7oFvs4%22%7D"
+          nontransferable = runParser parser "rmrk::mint::2.0.0::%7B%22collection%22%3A%220aff6865bed3a66b-DLEP%22%2C%22symbol%22%3A%22DL15%22%2C%22transferable%22%3A0%2C%22sn%22%3A%2200000001%22%2C%22metadata%22%3A%22ipfs%3A%2F%2Fipfs%2FQmavoTVbVHnGEUztnBT2p3rif3qBPeCfyyUE5v4Z7oFvs4%22%7D"
 
           afterblock = runParser parser "rmrk::MINT::2.0.0::%7B%22collection%22%3A%220aff6865bed3a66b-DLEP%22%2C%22symbol%22%3A%22DL15%22%2C%22transferable%22%3A100%2C%22sn%22%3A%2200000001%22%2C%22metadata%22%3A%22ipfs%3A%2F%2Fipfs%2FQmavoTVbVHnGEUztnBT2p3rif3qBPeCfyyUE5v4Z7oFvs4%22%7D"
 

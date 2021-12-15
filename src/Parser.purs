@@ -34,7 +34,7 @@ import Lib.Parsing.Combinators (Parser, ParserError, bigint, fail, finiteString,
 import RMRK.Primitives.Address (Address(..))
 import RMRK.Primitives.Base (BaseId(..), BaseSlot(..), BaseSlotAction(..), EquippableAction(..))
 import RMRK.Primitives.Base as Base
-import RMRK.Primitives.Collection (CollectionId(..), decodeCreatePayload)
+import RMRK.Primitives.Collection (CollectionId(..), decodeCollectionPayload)
 import RMRK.Primitives.Entity (EntityAddress(..))
 import RMRK.Primitives.IssuableId as IssuableId
 import RMRK.Primitives.NFT (NFTId(..), decodeNFTbase, isnftid)
@@ -84,10 +84,11 @@ interaction =
     <|> lock
     <|> mint
     <|> resadd
+    <|> setproperty
 
 root :: Parser Expr
 root = do
-  _ <- literal "rmrk"
+  _ <- literal "RMRK" <|> literal "rmrk"
   pure RootNamespace
 
 seperator :: Parser Expr
@@ -124,7 +125,7 @@ entity = do
 
 base :: Parser Stmt
 base = do
-  _ <- literal $ Op.toString Op.BASE
+  _ <- (literal $ Op.toString Op.BASE) <|> (literal $ toLower $ Op.toString Op.BASE)
   _ <- seperator
   version <- v2
   _ <- seperator
@@ -140,7 +141,7 @@ base = do
 
 create :: Parser Stmt
 create = do
-  _ <- literal $ Op.toString Op.CREATE
+  _ <- (literal $ Op.toString Op.CREATE) <|> (literal $ toLower $ Op.toString Op.CREATE)
   _ <- seperator
   version <- v2
   _ <- seperator
@@ -150,13 +151,13 @@ create = do
     Just collectionJson -> case parseJson collectionJson of
       Left error -> fail (printJsonDecodeError error)
       Right json -> do
-        case decodeCreatePayload json of
+        case decodeCollectionPayload json of
           Left error' -> fail (printJsonDecodeError error')
           Right collectionCreatePayload -> pure $ CREATE version collectionCreatePayload
 
 accept :: Parser Stmt
 accept = do
-  _ <- literal "ACCEPT"
+  _ <- (literal $ Op.toString Op.ACCEPT) <|> (literal $ toLower $ Op.toString Op.ACCEPT)
   _ <- seperator
   version <- v2
   _ <- seperator
@@ -167,7 +168,7 @@ accept = do
 
 list :: Parser Stmt
 list = do
-  _ <- literal $ Op.toString Op.LIST
+  _ <- (literal $ Op.toString Op.LIST) <|> (literal $ toLower $ Op.toString Op.LIST)
   _ <- seperator
   version <- v2
   _ <- seperator
@@ -178,7 +179,7 @@ list = do
 
 burn :: Parser Stmt
 burn = do
-  _ <- literal $ Op.toString Op.BURN
+  _ <- (literal $ Op.toString Op.BURN) <|> (literal $ toLower $ Op.toString Op.BURN)
   _ <- seperator
   version <- v2
   _ <- seperator
@@ -187,7 +188,7 @@ burn = do
 
 buy :: Parser Stmt
 buy = do
-  _ <- literal $ Op.toString Op.BUY
+  _ <- (literal $ Op.toString Op.BUY) <|> (literal $ toLower $ Op.toString Op.BUY)
   _ <- seperator
   version <- v2
   _ <- seperator
@@ -201,7 +202,7 @@ buy = do
 
 send :: Parser Stmt
 send = do
-  _ <- literal $ Op.toString Op.SEND
+  _ <- (literal $ Op.toString Op.SEND) <|> (literal $ toLower $ Op.toString Op.SEND)
   _ <- seperator
   version <- v2
   _ <- seperator
@@ -219,17 +220,17 @@ issuablebaseid = (map IssuableId.Base baseid) <|> (map IssuableId.Collection col
 baseid :: Parser BaseId
 baseid = do
   base' <- literal "base-"
-  rest <- takeuntil $ "::"
+  rest <- takeuntil "::"
   pure $ BaseId (base' <> rest)
 
 collectionid :: Parser CollectionId
 collectionid = do
-  rest <- takeuntil $ "::"
+  rest <- takeuntil "::"
   pure $ CollectionId rest
 
 changeissuer :: Parser Stmt
 changeissuer = do
-  _ <- literal $ Op.toString Op.CHANGEISSUER
+  _ <- (literal $ Op.toString Op.CHANGEISSUER) <|> (literal $ toLower $ Op.toString Op.CHANGEISSUER)
   _ <- seperator
   version <- v2
   _ <- seperator
@@ -251,7 +252,7 @@ namespace = do
 
 emote :: Parser Stmt
 emote = do
-  _ <- literal $ Op.toString Op.EMOTE
+  _ <- (literal $ Op.toString Op.EMOTE) <|> (literal $ toLower $ Op.toString Op.EMOTE)
   _ <- seperator
   version <- v2
   _ <- seperator
@@ -262,7 +263,7 @@ emote = do
 
 equip :: Parser Stmt
 equip = do
-  _ <- literal $ Op.toString Op.EQUIP
+  _ <- (literal $ Op.toString Op.EQUIP) <|> (literal $ toLower $ Op.toString Op.EQUIP)
   _ <- seperator
   version <- v2
   _ <- seperator
@@ -278,7 +279,7 @@ equip = do
 
 equippable :: Parser Stmt
 equippable = do
-  _ <- literal $ Op.toString Op.EQUIPPABLE
+  _ <- (literal $ Op.toString Op.EQUIPPABLE) <|> (literal $ toLower $ Op.toString Op.EQUIPPABLE)
   _ <- seperator
   version <- v2
   _ <- seperator
@@ -311,7 +312,7 @@ equippable = do
 
 lock :: Parser Stmt
 lock = do
-  _ <- literal $ Op.toString Op.LOCK
+  _ <- (literal $ Op.toString Op.LOCK) <|> (literal $ toLower $ Op.toString Op.LOCK)
   _ <- seperator
   version <- v2
   _ <- seperator
@@ -320,7 +321,7 @@ lock = do
 
 mint :: Parser Stmt
 mint = do
-  _ <- literal $ Op.toString Op.MINT
+  _ <- (literal $ Op.toString Op.MINT) <|> (literal $ toLower $ Op.toString Op.MINT)
   _ <- seperator
   version <- v2
   _ <- seperator
@@ -354,7 +355,7 @@ mintforrecipient version = do
 
 resadd :: Parser Stmt
 resadd = do
-  _ <- literal $ Op.toString Op.RESADD
+  _ <- (literal $ Op.toString Op.RESADD) <|> (literal $ toLower $ Op.toString Op.RESADD)
   _ <- seperator
   version <- v2
   _ <- seperator
@@ -369,3 +370,16 @@ resadd = do
         case decodeResourcePayload json of
           Left error' -> fail (printJsonDecodeError error')
           Right resource' -> pure $ RESADD version nftid' resource'
+
+setproperty :: Parser Stmt
+setproperty = do
+  _ <- (literal $ Op.toString Op.SETPROPERTY) <|> (literal $ toLower $ Op.toString Op.SETPROPERTY)
+  _ <- seperator
+  version <- v2
+  _ <- seperator
+  nftid' <- nftid
+  _ <- seperator
+  key <- takeuntil "::"
+  _ <- seperator
+  value <- tail
+  pure $ SEPROPERTY version nftid' key value

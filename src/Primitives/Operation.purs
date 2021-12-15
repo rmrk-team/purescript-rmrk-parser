@@ -1,4 +1,8 @@
-module RMRK.Primitives.Operation where
+module RMRK.Primitives.Operation
+  ( Operation(..)
+  , operationMatchPattern
+  , toString
+  ) where
 
 import Prelude
 import Data.Eq.Generic (genericEq)
@@ -50,3 +54,38 @@ toString op = case op of
   SETPROPERTY -> "SETPROPERTY"
   LOCK -> "LOCK"
   SETPRIORITY -> "SETPRIORITY"
+
+operationMatchPattern :: String
+operationMatchPattern =
+  (toString BUY) <> "|"
+    <> (toString LIST)
+    <> "|"
+    <> (toString CREATE)
+    <> "|"
+    <> (toString MINT)
+    <> "|"
+    <> (toString SEND)
+    <> "|"
+    <> (toString EMOTE)
+    <> "|"
+    <> (toString CHANGEISSUER)
+    <> "|"
+    <> (toString BURN)
+    <> "|"
+    <> (toString BASE)
+    <> "|"
+    <> (toString EQUIPPABLE)
+    <> "|"
+    <> (toString THEMEADD)
+    <> "|"
+    <> (toString RESADD)
+    <> "|"
+    <> (toString ACCEPT)
+    <> "|"
+    <> (toString EQUIP)
+    <> "|"
+    <> (toString SETPROPERTY)
+    <> "|"
+    <> (toString LOCK)
+    <> "|"
+    <> (toString SETPRIORITY)
