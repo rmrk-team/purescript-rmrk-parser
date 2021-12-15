@@ -39,6 +39,7 @@ import RMRK.Primitives.Entity (EntityAddress(..))
 import RMRK.Primitives.IssuableId as IssuableId
 import RMRK.Primitives.NFT (NFTId(..), decodeNFTbase, isnftid)
 import RMRK.Primitives.Namespace (Namespace(..))
+import RMRK.Primitives.Operation as Op
 import RMRK.Primitives.Price (Price(..))
 import RMRK.Primitives.Recipient as Recipient
 import RMRK.Primitives.Resource (ResourceId(..), decodeResource)
@@ -123,7 +124,7 @@ entity = do
 
 base :: Parser Stmt
 base = do
-  _ <- literal "BASE"
+  _ <- literal $ Op.toString Op.BASE
   _ <- seperator
   version <- v2
   _ <- seperator
@@ -139,7 +140,7 @@ base = do
 
 create :: Parser Stmt
 create = do
-  _ <- literal "CREATE"
+  _ <- literal $ Op.toString Op.CREATE
   _ <- seperator
   version <- v2
   _ <- seperator
@@ -166,7 +167,7 @@ accept = do
 
 list :: Parser Stmt
 list = do
-  _ <- literal "LIST"
+  _ <- literal $ Op.toString Op.LIST
   _ <- seperator
   version <- v2
   _ <- seperator
@@ -177,7 +178,7 @@ list = do
 
 burn :: Parser Stmt
 burn = do
-  _ <- literal "BURN"
+  _ <- literal $ Op.toString Op.BURN
   _ <- seperator
   version <- v2
   _ <- seperator
@@ -186,7 +187,7 @@ burn = do
 
 buy :: Parser Stmt
 buy = do
-  _ <- literal "BUY"
+  _ <- literal $ Op.toString Op.BUY
   _ <- seperator
   version <- v2
   _ <- seperator
@@ -200,7 +201,7 @@ buy = do
 
 send :: Parser Stmt
 send = do
-  _ <- literal "SEND"
+  _ <- literal $ Op.toString Op.SEND
   _ <- seperator
   version <- v2
   _ <- seperator
@@ -228,7 +229,7 @@ collectionid = do
 
 changeissuer :: Parser Stmt
 changeissuer = do
-  _ <- literal "CHANGEISSUER"
+  _ <- literal $ Op.toString Op.CHANGEISSUER
   _ <- seperator
   version <- v2
   _ <- seperator
@@ -250,7 +251,7 @@ namespace = do
 
 emote :: Parser Stmt
 emote = do
-  _ <- literal "EMOTE"
+  _ <- literal $ Op.toString Op.EMOTE
   _ <- seperator
   version <- v2
   _ <- seperator
@@ -261,7 +262,7 @@ emote = do
 
 equip :: Parser Stmt
 equip = do
-  _ <- literal "EQUIP"
+  _ <- literal $ Op.toString Op.EQUIP
   _ <- seperator
   version <- v2
   _ <- seperator
@@ -277,7 +278,7 @@ equip = do
 
 equippable :: Parser Stmt
 equippable = do
-  _ <- literal "EQUIPPABLE"
+  _ <- literal $ Op.toString Op.EQUIPPABLE
   _ <- seperator
   version <- v2
   _ <- seperator
@@ -310,7 +311,7 @@ equippable = do
 
 lock :: Parser Stmt
 lock = do
-  _ <- literal "LOCK"
+  _ <- literal $ Op.toString Op.LOCK
   _ <- seperator
   version <- v2
   _ <- seperator
@@ -319,7 +320,7 @@ lock = do
 
 mint :: Parser Stmt
 mint = do
-  _ <- literal "MINT"
+  _ <- literal $ Op.toString Op.MINT
   _ <- seperator
   version <- v2
   _ <- seperator
@@ -353,7 +354,7 @@ mintforrecipient version = do
 
 resadd :: Parser Stmt
 resadd = do
-  _ <- literal "RESADD"
+  _ <- literal $ Op.toString Op.RESADD
   _ <- seperator
   version <- v2
   _ <- seperator
