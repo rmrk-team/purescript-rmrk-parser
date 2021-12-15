@@ -12,6 +12,7 @@ import Data.Show.Generic (genericShow)
 import Data.String.Regex (regex, test)
 import Data.String.Regex.Flags (noFlags)
 import RMRK.Primitives.Block as Block
+import RMRK.Primitives.Properties (Properties)
 import RMRK.Primitives.TransferableState (TransferableState, fromInt)
 
 type NFTBaseFields
@@ -20,18 +21,20 @@ type NFTBaseFields
     , transferable :: TransferableState
     , sn :: String
     , metadata :: String
+    , properties :: Maybe Properties
     )
 
 type NFTBase
   = Record NFTBaseFields
 
-nftbase :: String -> String -> Int -> String -> String -> NFTBase
-nftbase collection symbol transferable sn metadata =
+nftbase :: String -> String -> Int -> String -> String -> Maybe Properties -> NFTBase
+nftbase collection symbol transferable sn metadata properties =
   { collection
   , symbol
   , transferable: fromInt transferable
   , sn
   , metadata
+  , properties
   }
 
 decodeNFTbase :: Json -> Either JsonDecodeError NFTBase
@@ -42,18 +45,19 @@ type Minted a
     | a
     }
 
-minted :: Block.BlockNr -> String -> String -> TransferableState -> String -> String -> Minted NFTBaseFields
-minted block collection symbol transferable sn metadata =
+minted :: Block.BlockNr -> String -> String -> TransferableState -> String -> String -> Maybe Properties -> Minted NFTBaseFields
+minted block collection symbol transferable sn metadata properties =
   { block
   , collection
   , symbol
   , transferable
   , sn
   , metadata
+  , properties
   }
 
 mint :: Block.BlockNr -> NFTBase -> Minted NFTBaseFields
-mint blocknr nft = minted blocknr nft.collection nft.symbol nft.transferable nft.sn nft.metadata
+mint blocknr nft = minted blocknr nft.collection nft.symbol nft.transferable nft.sn nft.metadata nft.properties
 
 identify :: Minted NFTBaseFields -> NFTId
 identify nft =

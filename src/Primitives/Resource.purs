@@ -9,15 +9,27 @@ import Data.Eq.Generic (genericEq)
 import Data.Generic.Rep (class Generic)
 import Data.Maybe (Maybe(..))
 import Data.Show.Generic (genericShow)
+import RMRK.Primitives.Base (BaseId)
+import RMRK.Primitives.Theme (Theme, ThemeId)
 
-type Resource
-  = { id :: ResourceId
-    , src :: String
-    , metadata :: String
-    }
+type ResourcePayloadRows
+  = ( id :: Maybe ResourceId
+    , src :: Maybe String
+    , metadata :: Maybe String
+    , base :: Maybe BaseId
+    , parts :: Maybe (Array String)
+    , slot :: Maybe String
+    , pending :: Maybe Boolean
+    , thumb :: Maybe String
+    , theme :: Maybe Theme
+    , themeId :: Maybe ThemeId
+    )
 
-decodeResource :: Json -> Either JsonDecodeError Resource
-decodeResource json = decodeJson json
+type ResourcePayload
+  = Record ResourcePayloadRows
+
+decodeResourcePayload :: Json -> Either JsonDecodeError ResourcePayload
+decodeResourcePayload json = decodeJson json
 
 newtype ResourceId
   = ResourceId String

@@ -23,7 +23,7 @@ import RMRK.Primitives.Namespace (Namespace(..))
 import RMRK.Primitives.Part (PartId(..), PartType(..), Part)
 import RMRK.Primitives.Price (Price(..))
 import RMRK.Primitives.Recipient as Recipient
-import RMRK.Primitives.Resource (Resource, ResourceId(..))
+import RMRK.Primitives.Resource (ResourcePayload, ResourceId(..))
 import RMRK.Primitives.TransferableState (TransferableState(..))
 import RMRK.Primitives.Version (Version(..))
 import RMRK.Syntax (Stmt(..))
@@ -237,6 +237,7 @@ parsertests =
           , "transferable": transferable
           , "sn": "00000001"
           , "metadata": "ipfs://ipfs/QmavoTVbVHnGEUztnBT2p3rif3qBPeCfyyUE5v4Z7oFvs4"
+          , "properties": Nothing
           }
       it "should parse correctly when minting for self" do
         let
@@ -262,11 +263,18 @@ parsertests =
       pending "feature complete"
     describe "Resadd" do
       let
-        expectedPayload :: Resource
+        expectedPayload :: ResourcePayload
         expectedPayload =
-          { "id": ResourceId "V1i6B"
-          , "src": "hash-of-metadata-guest-bird-art-with-jetpack"
-          , "metadata": "hash-of-metadata-with-credits"
+          { "id": Just $ ResourceId "V1i6B"
+          , "src": Just "hash-of-metadata-guest-bird-art-with-jetpack"
+          , "metadata": Just "hash-of-metadata-with-credits"
+          , "base": Nothing
+          , "parts": Nothing
+          , "pending": Nothing
+          , "slot": Nothing
+          , "theme": Nothing
+          , "themeId": Nothing
+          , "thumb": Nothing
           }
       it "should parse correctly when minting for self" do
         let

@@ -42,7 +42,7 @@ import RMRK.Primitives.Namespace (Namespace(..))
 import RMRK.Primitives.Operation as Op
 import RMRK.Primitives.Price (Price(..))
 import RMRK.Primitives.Recipient as Recipient
-import RMRK.Primitives.Resource (ResourceId(..), decodeResource)
+import RMRK.Primitives.Resource (ResourceId(..), decodeResourcePayload)
 import RMRK.Primitives.Version (Version(..))
 import RMRK.Syntax (Expr(..), Stmt(..))
 
@@ -366,6 +366,6 @@ resadd = do
     Just resourceJson -> case parseJson resourceJson of
       Left error -> fail (printJsonDecodeError error)
       Right json -> do
-        case decodeResource json of
+        case decodeResourcePayload json of
           Left error' -> fail (printJsonDecodeError error')
           Right resource' -> pure $ RESADD version nftid' resource'

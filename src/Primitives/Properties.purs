@@ -1,13 +1,14 @@
 module RMRK.Primitives.Properties where
 
 import Prelude
-import Data.Argonaut.Core (Json)
-import Data.Argonaut.Decode (class DecodeJson, decodeJson)
+import Data.Argonaut.Core (Json, stringifyWithIndent, toString)
+import Data.Argonaut.Decode (class DecodeJson, JsonDecodeError(..), decodeJson)
 import Data.Argonaut.Encode (class EncodeJson, encodeJson)
+import Data.Either (Either(..))
 import Data.Eq.Generic (genericEq)
 import Data.Generic.Rep (class Generic)
 import Data.Map (Map)
-import Data.Maybe (Maybe)
+import Data.Maybe (Maybe(..))
 import Data.Show.Generic (genericShow)
 
 type Properties
@@ -26,7 +27,7 @@ type Property
                 }
           }
     , type :: PropertyType
-    , value :: Json
+    , value :: PropertyValue
     }
 
 data PropertyType
@@ -45,9 +46,41 @@ instance eqPropertyType :: Eq PropertyType where
   eq = genericEq
 
 instance encodeJsonPropertyType :: EncodeJson PropertyType where
-  encodeJson a = encodeJson a
+  encodeJson a = case a of
+    Array -> encodeJson "array"
+    Object -> encodeJson "object"
+    Int -> encodeJson "int"
+    Float -> encodeJson "float"
+    String -> encodeJson "string"
 
 instance decodeJsonPropertyType :: DecodeJson PropertyType where
+  decodeJson json = do
+    let
+      string = toString json
+    case string of
+      Just "array" -> Right Array
+      Just "object" -> Right Object
+      Just "int" -> Right Int
+      Just "float" -> Right Float
+      Just "string" -> Right String
+      Just invalid -> Left $ TypeMismatch $ "invalid property type: " <> invalid
+      Nothing -> Left $ MissingValue
+
+newtype PropertyValue
+  = PropertyValue Json
+
+derive instance gePropertyValue :: Generic PropertyValue _
+
+instance showPropertyValue :: Show PropertyValue where
+  show (PropertyValue json) = "PropertyValue " <> (stringifyWithIndent 2 json)
+
+instance eqPropertyValue :: Eq PropertyValue where
+  eq = genericEq
+
+instance encodeJsonPropertyValue :: EncodeJson PropertyValue where
+  encodeJson a = encodeJson a
+
+instance decodeJsonPropertyValue :: DecodeJson PropertyValue where
   decodeJson a = decodeJson a
 
 -- export type IProperties = Record<string, IAttribute>;

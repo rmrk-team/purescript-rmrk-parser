@@ -3,7 +3,6 @@ module RMRK.Primitives.Operation where
 import Prelude
 import Data.Eq.Generic (genericEq)
 import Data.Generic.Rep (class Generic)
-import Data.Show.Generic (genericShow)
 
 data Operation
   = BUY
@@ -27,7 +26,7 @@ data Operation
 derive instance genericOperation :: Generic Operation _
 
 instance showOperation :: Show Operation where
-  show = genericShow
+  show = toString
 
 instance eqOperation :: Eq Operation where
   eq = genericEq
