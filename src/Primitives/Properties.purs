@@ -78,7 +78,7 @@ instance eqAttributeValue :: Eq AttributeValue where
   eq = genericEq
 
 instance encodeJsonAttributeValue :: EncodeJson AttributeValue where
-  encodeJson a = encodeJson a
+  encodeJson (AttributeValue a) = encodeJson a
 
 instance decodeJsonAttributeValue :: DecodeJson AttributeValue where
   decodeJson a = decodeJson a

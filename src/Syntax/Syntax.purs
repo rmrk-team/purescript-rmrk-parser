@@ -13,6 +13,7 @@ import RMRK.Primitives.IssuableId (IssuableId)
 import RMRK.Primitives.NFT (NFTBase, NFTId)
 import RMRK.Primitives.Namespace (Namespace)
 import RMRK.Primitives.Price (Price)
+import RMRK.Primitives.Properties (AttributeValue)
 import RMRK.Primitives.Recipient (Recipient)
 import RMRK.Primitives.Resource (ResourcePayload)
 import RMRK.Primitives.Version (Version)
@@ -46,7 +47,7 @@ data Stmt
   | LOCK Version CollectionId
   | MINT Version NFTBase (Maybe Recipient)
   | RESADD Version NFTId ResourcePayload
-  | SEPROPERTY Version NFTId String String
+  | SETPROPERTY Version NFTId String AttributeValue
 
 derive instance genericStmt :: Generic Stmt _
 

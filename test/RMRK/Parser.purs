@@ -4,6 +4,8 @@ module Test.RMRK.Parser
 
 import Prelude
 import Control.Monad.Error.Class (class MonadThrow)
+import Data.Argonaut.Core (fromString)
+import Data.Argonaut.Decode (parseJson, printJsonDecodeError)
 import Data.BigInt as BigInt
 import Data.Either (Either(..))
 import Data.Map as M
@@ -12,24 +14,25 @@ import Data.Tuple (Tuple(..))
 import Effect.Aff (Error)
 import Lib.Data.HomogenousRecord (HomogenousRecord(..))
 import Lib.Parsing.Combinators (runParser)
+import RMRK.Parser (parser)
 import RMRK.Primitives.Address (Address(..))
 import RMRK.Primitives.Base (BaseId(..), BaseSlot(..), BaseSlotAction(..), BaseType(..), EquippableAction(..))
 import RMRK.Primitives.Collection (CollectionId(..))
 import RMRK.Primitives.Entity as EntityAddress
 import RMRK.Primitives.Equippable (Equippable(..))
 import RMRK.Primitives.IssuableId (IssuableId(..))
-import RMRK.Primitives.NFT (NFTId(..), NFTBase)
+import RMRK.Primitives.NFT (NFTBase, NFTId(..))
 import RMRK.Primitives.Namespace (Namespace(..))
 import RMRK.Primitives.Part (PartId(..), PartType(..), Part)
 import RMRK.Primitives.Price (Price(..))
+import RMRK.Primitives.Properties (AttributeValue(..))
 import RMRK.Primitives.Recipient as Recipient
 import RMRK.Primitives.Resource (ResourcePayload, ResourceId(..))
 import RMRK.Primitives.TransferableState (TransferableState(..))
 import RMRK.Primitives.Version (Version(..))
 import RMRK.Syntax (Stmt(..))
-import RMRK.Parser (parser)
 import Test.Spec (SpecT, describe, it, pending)
-import Test.Spec.Assertions (shouldEqual)
+import Test.Spec.Assertions (fail, shouldEqual)
 
 basejson :: String
 basejson =
@@ -280,6 +283,34 @@ parsertests =
         let
           parsed = runParser parser "rmrk::RESADD::2.0.0::5105000-0aff6865bed3a66b-DLEP-DL15-00000001::%7B%22id%22:%22V1i6B%22,%22src%22:%22hash-of-metadata-guest-bird-art-with-jetpack%22,%22metadata%22:%22hash-of-metadata-with-credits%22%7D"
         parsed `shouldEqual` (Right $ Tuple (RESADD V2 (NFTId "5105000-0aff6865bed3a66b-DLEP-DL15-00000001") expectedPayload) "")
+      pending "feature complete"
+    describe "Setproperty" do
+      it "should parse correctly with unquoted strings" do
+        let
+          parsed = runParser parser "rmrk::SETPROPERTY::2.0.0::5105000-0aff6865bed3a66b-DLEP-DL15-00000001::color::red"
+
+          value = fromString "red"
+        parsed `shouldEqual` (Right $ Tuple (SETPROPERTY V2 (NFTId "5105000-0aff6865bed3a66b-DLEP-DL15-00000001") "color" (AttributeValue value)) "")
+      it "should parse correctly with valid json objects" do
+        let
+          valuejson = "{ \"color\": \"red\" }"
+
+          parsed = runParser parser ("rmrk::SETPROPERTY::2.0.0::5105000-0aff6865bed3a66b-DLEP-DL15-00000001::obj::" <> valuejson)
+
+          value = parseJson valuejson
+        case value of
+          Left error -> fail $ printJsonDecodeError error
+          Right json -> parsed `shouldEqual` (Right $ Tuple (SETPROPERTY V2 (NFTId "5105000-0aff6865bed3a66b-DLEP-DL15-00000001") "obj" (AttributeValue json)) "")
+      it "should parse correctly with valid json booleans" do
+        let
+          valuejson = "true"
+
+          parsed = runParser parser ("rmrk::SETPROPERTY::2.0.0::5105000-0aff6865bed3a66b-DLEP-DL15-00000001::enabled::" <> valuejson)
+
+          value = parseJson valuejson
+        case value of
+          Left error -> fail $ printJsonDecodeError error
+          Right json -> parsed `shouldEqual` (Right $ Tuple (SETPROPERTY V2 (NFTId "5105000-0aff6865bed3a66b-DLEP-DL15-00000001") "enabled" (AttributeValue json)) "")
       pending "feature complete"
 
 --rmrk::EQUIP::2.0.0::5105000-0aff6865bed3a66b-DLEP-ARMOR-00000001::base_1.slot_1

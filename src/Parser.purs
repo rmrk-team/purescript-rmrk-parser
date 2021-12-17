@@ -23,6 +23,7 @@ module RMRK.Parser
 
 import Prelude
 import Control.Alt ((<|>))
+import Data.Argonaut.Core (fromString)
 import Data.Argonaut.Decode (parseJson, printJsonDecodeError)
 import Data.Either (Either(..))
 import Data.Maybe (Maybe(..))
@@ -41,6 +42,7 @@ import RMRK.Primitives.NFT (NFTId(..), decodeNFTbase, isnftid)
 import RMRK.Primitives.Namespace (Namespace(..))
 import RMRK.Primitives.Operation as Op
 import RMRK.Primitives.Price (Price(..))
+import RMRK.Primitives.Properties (AttributeValue(..))
 import RMRK.Primitives.Recipient as Recipient
 import RMRK.Primitives.Resource (ResourceId(..), decodeResourcePayload)
 import RMRK.Primitives.Version (Version(..))
@@ -382,4 +384,6 @@ setproperty = do
   key <- takeuntil "::"
   _ <- seperator
   value <- tail
-  pure $ SEPROPERTY version nftid' key value
+  case parseJson value of
+    Left _ -> do pure $ SETPROPERTY version nftid' key (AttributeValue (fromString value))
+    Right json -> pure $ SETPROPERTY version nftid' key (AttributeValue json)
