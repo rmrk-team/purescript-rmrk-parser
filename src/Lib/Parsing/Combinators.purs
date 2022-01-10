@@ -21,10 +21,12 @@ module Lib.Parsing.Combinators
   , takeuntil
   , ternary
   , toChars
+  , ignorecase
   ) where
 
 import Prelude
-import Control.Alt (class Alt)
+
+import Control.Alt (class Alt, (<|>))
 import Control.Alternative (class Alternative)
 import Control.Lazy (class Lazy)
 import Control.Plus (class Plus)
@@ -33,7 +35,7 @@ import Data.BigInt as BigInt
 import Data.Either (Either(..))
 import Data.List (List(..), many, (:), some, foldl)
 import Data.Maybe (Maybe(..))
-import Data.String (Pattern(..), drop, length, split)
+import Data.String (Pattern(..), drop, length, split, toLower)
 import Data.String.CodeUnits (fromCharArray, toCharArray)
 import Data.Tuple (Tuple(..))
 
@@ -200,3 +202,7 @@ someSpace :: Parser String
 someSpace = do
   spaces' <- some $ ternary isSpace
   pure $ fromChars spaces'
+
+ignorecase :: String -> Parser String
+ignorecase s = 
+  (literal s) <|> (literal $ toLower s)

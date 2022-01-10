@@ -1,25 +1,25 @@
 module RMRK.Parser
-  ( parse
-  , parser
-  , accept
+  ( accept
   , base
   , baseid
   , burn
   , buy
   , changeissuer
   , collectionid
-  , create
   , entity
   , equip
   , interaction
   , issuablebaseid
   , list
   , nftid
+  , parse
+  , parser
   , price
   , root
   , seperator
   , v2
-  ) where
+  )
+  where
 
 import Prelude
 
@@ -32,7 +32,7 @@ import Data.String (Pattern(..), Replacement(..), length, replace, split, toLowe
 import Data.String.Utils (startsWith)
 import Data.Tuple (Tuple(..))
 import JSURI (decodeURIComponent)
-import Lib.Parsing.Combinators (Parser, ParserError, bigint, fail, finiteString, literal, runParser, tail, takeuntil)
+import Lib.Parsing.Combinators (Parser, ParserError, bigint, fail, finiteString, ignorecase, literal, runParser, tail, takeuntil)
 import RMRK.Primitives.Address (Address(..))
 import RMRK.Primitives.Base (BaseId(..), BaseSlot(..), BaseSlotAction(..), EquippableAction(..))
 import RMRK.Primitives.Base as Base
@@ -119,7 +119,7 @@ price = do
 
 entity :: Parser EntityAddress
 entity = do
-  type' <- (literal "RES") <|> (literal "NFT")
+  type' <- (ignorecase "RES") <|> (ignorecase "NFT")
   _ <- seperator
   id <- finiteString
   case type' of
@@ -129,7 +129,7 @@ entity = do
 
 base :: Parser Stmt
 base = do
-  _ <- (literal $ Op.toString Op.BASE) <|> (literal $ toLower $ Op.toString Op.BASE)
+  _ <- ignorecase $ Op.toString Op.BASE
   _ <- seperator
   version <- v2
   _ <- seperator
@@ -145,7 +145,7 @@ base = do
 
 create :: Parser Stmt
 create = do
-  _ <- (literal $ Op.toString Op.CREATE) <|> (literal $ toLower $ Op.toString Op.CREATE)
+  _ <- ignorecase $ Op.toString Op.CREATE
   _ <- seperator
   version <- v2
   _ <- seperator
@@ -161,7 +161,7 @@ create = do
 
 accept :: Parser Stmt
 accept = do
-  _ <- (literal $ Op.toString Op.ACCEPT) <|> (literal $ toLower $ Op.toString Op.ACCEPT)
+  _ <- ignorecase $ Op.toString Op.ACCEPT
   _ <- seperator
   version <- v2
   _ <- seperator
@@ -172,7 +172,7 @@ accept = do
 
 list :: Parser Stmt
 list = do
-  _ <- (literal $ Op.toString Op.LIST) <|> (literal $ toLower $ Op.toString Op.LIST)
+  _ <- ignorecase $ Op.toString Op.LIST
   _ <- seperator
   version <- v2
   _ <- seperator
@@ -183,7 +183,7 @@ list = do
 
 burn :: Parser Stmt
 burn = do
-  _ <- (literal $ Op.toString Op.BURN) <|> (literal $ toLower $ Op.toString Op.BURN)
+  _ <- ignorecase $ Op.toString Op.BURN
   _ <- seperator
   version <- v2
   _ <- seperator
@@ -192,7 +192,7 @@ burn = do
 
 buy :: Parser Stmt
 buy = do
-  _ <- (literal $ Op.toString Op.BUY) <|> (literal $ toLower $ Op.toString Op.BUY)
+  _ <- ignorecase $ Op.toString Op.BUY
   _ <- seperator
   version <- v2
   _ <- seperator
@@ -206,7 +206,7 @@ buy = do
 
 send :: Parser Stmt
 send = do
-  _ <- (literal $ Op.toString Op.SEND) <|> (literal $ toLower $ Op.toString Op.SEND)
+  _ <- ignorecase $ Op.toString Op.SEND
   _ <- seperator
   version <- v2
   _ <- seperator
@@ -234,7 +234,7 @@ collectionid = do
 
 changeissuer :: Parser Stmt
 changeissuer = do
-  _ <- (literal $ Op.toString Op.CHANGEISSUER) <|> (literal $ toLower $ Op.toString Op.CHANGEISSUER)
+  _ <- ignorecase $ Op.toString Op.CHANGEISSUER
   _ <- seperator
   version <- v2
   _ <- seperator
@@ -256,7 +256,7 @@ namespace = do
 
 emote :: Parser Stmt
 emote = do
-  _ <- (literal $ Op.toString Op.EMOTE) <|> (literal $ toLower $ Op.toString Op.EMOTE)
+  _ <- ignorecase $ Op.toString Op.EMOTE
   _ <- seperator
   version <- v2
   _ <- seperator
@@ -267,7 +267,7 @@ emote = do
 
 equip :: Parser Stmt
 equip = do
-  _ <- (literal $ Op.toString Op.EQUIP) <|> (literal $ toLower $ Op.toString Op.EQUIP)
+  _ <- ignorecase $ Op.toString Op.EQUIP
   _ <- seperator
   version <- v2
   _ <- seperator
@@ -283,7 +283,7 @@ equip = do
 
 equippable :: Parser Stmt
 equippable = do
-  _ <- (literal $ Op.toString Op.EQUIPPABLE) <|> (literal $ toLower $ Op.toString Op.EQUIPPABLE)
+  _ <- ignorecase $ Op.toString Op.EQUIPPABLE
   _ <- seperator
   version <- v2
   _ <- seperator
@@ -316,7 +316,7 @@ equippable = do
 
 lock :: Parser Stmt
 lock = do
-  _ <- (literal $ Op.toString Op.LOCK) <|> (literal $ toLower $ Op.toString Op.LOCK)
+  _ <- ignorecase $ Op.toString Op.LOCK
   _ <- seperator
   version <- v2
   _ <- seperator
@@ -325,7 +325,7 @@ lock = do
 
 mint :: Parser Stmt
 mint = do
-  _ <- (literal $ Op.toString Op.MINT) <|> (literal $ toLower $ Op.toString Op.MINT)
+  _ <- ignorecase $ Op.toString Op.MINT
   _ <- seperator
   version <- v2
   _ <- seperator
@@ -359,7 +359,7 @@ mintforrecipient version = do
 
 resadd :: Parser Stmt
 resadd = do
-  _ <- (literal $ Op.toString Op.RESADD) <|> (literal $ toLower $ Op.toString Op.RESADD)
+  _ <- ignorecase $ Op.toString Op.RESADD
   _ <- seperator
   version <- v2
   _ <- seperator
@@ -377,7 +377,7 @@ resadd = do
 
 setproperty :: Parser Stmt
 setproperty = do
-  _ <- (literal $ Op.toString Op.SETPROPERTY) <|> (literal $ toLower $ Op.toString Op.SETPROPERTY)
+  _ <- ignorecase $ Op.toString Op.SETPROPERTY
   _ <- seperator
   version <- v2
   _ <- seperator
@@ -392,7 +392,7 @@ setproperty = do
 
 setpriority :: Parser Stmt
 setpriority = do
-  _ <- (literal $ Op.toString Op.SETPRIORITY) <|> (literal $ toLower $ Op.toString Op.SETPRIORITY)
+  _ <- ignorecase $ Op.toString Op.SETPRIORITY
   _ <- seperator
   version <- v2
   _ <- seperator
