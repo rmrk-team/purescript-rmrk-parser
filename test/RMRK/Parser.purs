@@ -312,5 +312,11 @@ parsertests =
           Left error -> fail $ printJsonDecodeError error
           Right json -> parsed `shouldEqual` (Right $ Tuple (SETPROPERTY V2 (NFTId "5105000-0aff6865bed3a66b-DLEP-DL15-00000001") "enabled" (AttributeValue json)) "")
       pending "feature complete"
+    describe "Setpriority" do
+      it "should parse correctly a comma separated list of properties" do
+        let
+          parsed = runParser parser "rmrk::SETPRIORITY::2.0.0::5105000-0aff6865bed3a66b-DLEP-DL15-00000001::foo,bar,baz"
+        parsed `shouldEqual` (Right $ Tuple (SETPRIORITY V2 (NFTId "5105000-0aff6865bed3a66b-DLEP-DL15-00000001") (["foo", "bar", "baz"])) "")
+      pending "feature complete"
 
 --rmrk::EQUIP::2.0.0::5105000-0aff6865bed3a66b-DLEP-ARMOR-00000001::base_1.slot_1

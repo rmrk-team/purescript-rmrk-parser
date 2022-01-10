@@ -48,6 +48,7 @@ data Stmt
   | MINT Version NFTBase (Maybe Recipient)
   | RESADD Version NFTId ResourcePayload
   | SETPROPERTY Version NFTId String AttributeValue
+  | SETPRIORITY Version NFTId (Array String)
 
 derive instance genericStmt :: Generic Stmt _
 

@@ -22,6 +22,7 @@ module RMRK.Parser
   ) where
 
 import Prelude
+
 import Control.Alt ((<|>))
 import Data.Argonaut.Core (fromString)
 import Data.Argonaut.Decode (parseJson, printJsonDecodeError)
@@ -85,6 +86,7 @@ interaction =
     <|> equippable
     <|> lock
     <|> mint
+    <|> setpriority
     <|> resadd
     <|> setproperty
 
@@ -387,3 +389,14 @@ setproperty = do
   case parseJson value of
     Left _ -> do pure $ SETPROPERTY version nftid' key (AttributeValue (fromString value))
     Right json -> pure $ SETPROPERTY version nftid' key (AttributeValue json)
+
+setpriority :: Parser Stmt
+setpriority = do
+  _ <- (literal $ Op.toString Op.SETPRIORITY) <|> (literal $ toLower $ Op.toString Op.SETPRIORITY)
+  _ <- seperator
+  version <- v2
+  _ <- seperator
+  nftid' <- nftid
+  _ <- seperator
+  value <- tail
+  pure $ SETPRIORITY version nftid' (split (Pattern ",") value)

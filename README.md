@@ -57,8 +57,8 @@ The following **interactions** are implemented:
 - [x] [LIST](https://github.com/rmrk-team/rmrk-spec/blob/master/standards/rmrk2.0.0/interactions/list.md) (List an NFT for sale)
 - [x] [SEND](https://github.com/rmrk-team/rmrk-spec/blob/master/standards/rmrk2.0.0/interactions/send.md) (Sending an NFT to a recipient)
 - [x] [RESADD](https://github.com/rmrk-team/rmrk-spec/blob/master/standards/rmrk2.0.0/interactions/resadd.md) (Add a new resource to an NFT as the collection issuer)
-- [ ] [SETPROPERTY](https://github.com/rmrk-team/rmrk-spec/blob/master/standards/rmrk2.0.0/interactions/setproperty.md) (Set a custom value on an NFT)
-- [ ] [SETPRIORITY](https://github.com/rmrk-team/rmrk-spec/blob/master/standards/rmrk2.0.0/interactions/setpriority.md) (Set a different order of resource priority)
+- [x] [SETPROPERTY](https://github.com/rmrk-team/rmrk-spec/blob/master/standards/rmrk2.0.0/interactions/setproperty.md) (Set a custom value on an NFT)
+- [x] [SETPRIORITY](https://github.com/rmrk-team/rmrk-spec/blob/master/standards/rmrk2.0.0/interactions/setpriority.md) (Set a different order of resource priority)
 - [ ] [THEMEADD](https://github.com/rmrk-team/rmrk-spec/blob/master/standards/rmrk2.0.0/interactions/themeadd.md) (Add a new theme to a base)
 
 ## Docs
