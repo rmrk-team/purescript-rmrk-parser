@@ -1,11 +1,13 @@
 module RMRK.Primitives.Theme
   ( Theme
   , ThemeId(..)
+  , decodeThemePayload
   ) where
 
 import Prelude
-import Data.Argonaut.Core (toString)
-import Data.Argonaut.Decode (class DecodeJson, JsonDecodeError(..))
+
+import Data.Argonaut.Core (Json, toString)
+import Data.Argonaut.Decode (class DecodeJson, JsonDecodeError(..), decodeJson)
 import Data.Argonaut.Encode (class EncodeJson, encodeJson)
 import Data.Either (Either(..))
 import Data.Eq.Generic (genericEq)
@@ -16,6 +18,9 @@ import Lib.Data.HomogenousRecord (HomogenousRecord)
 
 type Theme
   = HomogenousRecord String
+
+decodeThemePayload :: Json -> Either JsonDecodeError Theme
+decodeThemePayload json = decodeJson json
 
 newtype ThemeId
   = ThemeId String

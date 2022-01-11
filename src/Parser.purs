@@ -46,6 +46,7 @@ import RMRK.Primitives.Price (Price(..))
 import RMRK.Primitives.Properties (AttributeValue(..))
 import RMRK.Primitives.Recipient as Recipient
 import RMRK.Primitives.Resource (ResourceId(..), decodeResourcePayload)
+import RMRK.Primitives.Theme (ThemeId(..), decodeThemePayload)
 import RMRK.Primitives.Version (Version(..))
 import RMRK.Syntax (Expr(..), Stmt(..))
 
@@ -89,6 +90,7 @@ interaction =
     <|> setpriority
     <|> resadd
     <|> setproperty
+    <|> themeadd
 
 root :: Parser Expr
 root = do
@@ -400,3 +402,28 @@ setpriority = do
   _ <- seperator
   value <- tail
   pure $ SETPRIORITY version nftid' (split (Pattern ",") value)
+
+themeid :: Parser ThemeId
+themeid = do
+  rest <- takeuntil "::"
+  pure $ ThemeId rest
+
+themeadd :: Parser Stmt
+themeadd = do
+  _ <- ignorecase $ Op.toString Op.THEMEADD
+  _ <- seperator
+  version <- v2
+  _ <- seperator
+  baseid' <- baseid
+  _ <- seperator
+  themeid' <- themeid
+  _ <- seperator
+  htmlEncodedThemeJSON <- tail
+  case decodeURIComponent htmlEncodedThemeJSON of
+    Nothing -> do fail "could not url decode resource json"
+    Just themeJson -> case parseJson themeJson of
+      Left error -> fail (printJsonDecodeError error)
+      Right json -> do
+        case decodeThemePayload json of
+          Left error' -> fail (printJsonDecodeError error')
+          Right theme' -> pure $ THEMEADD version baseid' themeid' theme'

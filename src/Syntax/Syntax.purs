@@ -1,6 +1,7 @@
 module RMRK.Syntax where
 
 import Prelude
+
 import Data.Eq.Generic (genericEq)
 import Data.Generic.Rep (class Generic)
 import Data.Maybe (Maybe)
@@ -16,6 +17,7 @@ import RMRK.Primitives.Price (Price)
 import RMRK.Primitives.Properties (AttributeValue)
 import RMRK.Primitives.Recipient (Recipient)
 import RMRK.Primitives.Resource (ResourcePayload)
+import RMRK.Primitives.Theme (Theme, ThemeId)
 import RMRK.Primitives.Version (Version)
 
 data Expr
@@ -49,6 +51,9 @@ data Stmt
   | RESADD Version NFTId ResourcePayload
   | SETPROPERTY Version NFTId String AttributeValue
   | SETPRIORITY Version NFTId (Array String)
+  | THEMEADD Version BaseId ThemeId Theme
+
+  -- rmrk::THEMEADD::{version}::{base_id}::{name}::{html_encoded_json})
 
 derive instance genericStmt :: Generic Stmt _
 

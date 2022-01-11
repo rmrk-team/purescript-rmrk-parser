@@ -3,6 +3,7 @@ module Test.RMRK.Parser
   ) where
 
 import Prelude
+
 import Control.Monad.Error.Class (class MonadThrow)
 import Data.Argonaut.Core (fromString)
 import Data.Argonaut.Decode (parseJson, printJsonDecodeError)
@@ -28,6 +29,7 @@ import RMRK.Primitives.Price (Price(..))
 import RMRK.Primitives.Properties (AttributeValue(..))
 import RMRK.Primitives.Recipient as Recipient
 import RMRK.Primitives.Resource (ResourcePayload, ResourceId(..))
+import RMRK.Primitives.Theme (ThemeId(..))
 import RMRK.Primitives.TransferableState (TransferableState(..))
 import RMRK.Primitives.Version (Version(..))
 import RMRK.Syntax (Stmt(..))
@@ -318,5 +320,16 @@ parsertests =
           parsed = runParser parser "rmrk::SETPRIORITY::2.0.0::5105000-0aff6865bed3a66b-DLEP-DL15-00000001::foo,bar,baz"
         parsed `shouldEqual` (Right $ Tuple (SETPRIORITY V2 (NFTId "5105000-0aff6865bed3a66b-DLEP-DL15-00000001") (["foo", "bar", "baz"])) "")
       pending "feature complete"
+
+    
+    describe "Themeadd" do
+      it "should parse correctly a theme add operation" do
+        let
+          parsed = runParser parser """rmrk::THEMEADD::2.0.0::base-2345-SYM::default::{ "color": "yellow" }"""
+        parsed `shouldEqual` (Right $ Tuple (THEMEADD V2 (BaseId "base-2345-SYM") (ThemeId "default") (HomogenousRecord $ M.fromFoldable [ Tuple "color" "yellow" ])) "")
+      pending "feature complete"
+
+
+    --THEMEADD Version BaseId ThemeId Theme
 
 --rmrk::EQUIP::2.0.0::5105000-0aff6865bed3a66b-DLEP-ARMOR-00000001::base_1.slot_1
