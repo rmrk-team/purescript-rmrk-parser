@@ -23,6 +23,7 @@
     "spago": "^0.20.3"
   },
   "dependencies": {
-    "big-integer": "^1.6.51"
+    "big-integer": "^1.6.51",
+    "bower": "^1.8.13"
   }
 }
